@@ -1,0 +1,2 @@
+*.sqlite3
+/hopa_consensus/__pycache__/
