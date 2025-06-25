@@ -36,7 +36,7 @@ export default function LaunchPage() {
   const router = useRouter();
   const [isConversationMode, setIsConversationMode] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [messages, setMessages] = useState<Array<{ type: 'user' | 'ai', content: string }>>([]);
+  const [messages, setMessages] = useState<Array<{ type: 'user' | 'ai', content: string, showConsensusCard?: boolean }>>([]);
   const handleSendMessage = () => {
     if (inputValue.trim()) {
       // 如果是第一次进入对话模式，先添加AI的初始消息
@@ -58,7 +58,11 @@ export default function LaunchPage() {
       
       // 模拟AI回复（延迟1秒）
       setTimeout(() => {
-        setMessages(prev => [...prev, { type: 'ai', content: '我正在为你规划合适的活动，请稍等...' }]);
+        setMessages(prev => [...prev, { 
+          type: 'ai', 
+          content: '好的！我推荐使用这个共识模板：',
+          showConsensusCard: true 
+        }]);
       }, 1000);
     }
   };
@@ -74,7 +78,7 @@ export default function LaunchPage() {
       {/* Top and Middle Content */}
       <div className="shrink-0 flex-1">
         {/* Top section */}        
-        <div className={`flex items-start ${isConversationMode ? 'p-4 pt-4' : 'p-8 pt-16'}`}>
+        <div className={`flex items-start ${isConversationMode ? '' : 'p-8 pt-16'}`}>
           {!isConversationMode && (
             <>
               <Image src={LogoPNG} alt="logo" width={60} height={60} />
@@ -90,14 +94,14 @@ export default function LaunchPage() {
             </>
           )}
         </div>        {/* Middle section */}
-        <div className={`flex flex-col items-center gap-8 ${isConversationMode ? 'my-2' : 'my-4'}`}>
+        <div className={`flex flex-col items-center gap-8 ${isConversationMode ? '' : 'my-4'}`}>
           {/* 对话消息区域 */}
           {isConversationMode && (
-            <div className="flex-1 w-full max-h-96 overflow-y-auto px-4">
+            <div className="flex-1 w-full max-h-96 overflow-y-auto px-4 pt-4">
               {messages.map((msg, index) => (
                 msg.type === 'user' ? 
                   <UserMessage key={index} message={msg.content} /> :
-                  <AiMessage key={index} message={msg.content} />
+                  <AiMessage key={index} message={msg.content} showConsensusCard={msg.showConsensusCard} />
               ))}
             </div>
           )}
