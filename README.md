@@ -8,6 +8,11 @@
 
 ## 后端使用
 
+- 进入`\backend\`文件夹下，先运行`python -m pip install Django`安装Django
+- 运行`python manage.py migrate`进行数据库迁移
+- 运行`python manage.py runserver`启动后端服务
+- 运行`python .\ai_conss\load.py`上传部分模板数据
+- 随后就可以正常使用,开放在`http://localhost:8000`，目前只有`/ai_conss/match/`接口可以使用，其他接口还未完成
 
 
 ## 关于素材
