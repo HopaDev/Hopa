@@ -9,7 +9,7 @@ import PersonIcon from "@/assets/img/Person.png";
 
 export default function ConditionalNavigation() {
   const pathname = usePathname();
-  const hideNavigation = pathname === '/launch';
+  const hideNavigation = pathname === '/launch' || pathname === '/result';
 
   useEffect(() => {
     const main = document.querySelector('main');
