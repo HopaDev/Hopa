@@ -1,2 +1,4 @@
 *.sqlite3
 /hopa_consensus/__pycache__/
+
+/ai_conss/migrations/
