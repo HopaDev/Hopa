@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
+import NavButton from "@/components/NavButton";
+import HomeIcon from "@/assets/img/Home.png";
+import LaunchIcon from "@/assets/img/Launch.png";
+import PersonIcon from "@/assets/img/Person.png";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,12 +30,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <nav className="flex gap-4 p-4 border-b">
-          <Link href="/" className="hover:text-blue-600">首页</Link>
-          <Link href="/launch" className="hover:text-blue-600">Launch</Link>
-          <Link href="/mypage" className="hover:text-blue-600">我的</Link>
+        <main className="pb-24">{children}</main> {/* Add padding to bottom to avoid overlap */}
+        <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-11/12 max-w-sm mx-auto bg-gray-100/70 backdrop-blur-lg rounded-full shadow-lg p-1">
+          <div className="flex justify-around items-center">
+            <NavButton href="/" imgSrc={HomeIcon} text="首页" />
+            <NavButton href="/launch" imgSrc={LaunchIcon} text="发起" />
+            <NavButton href="/mypage" imgSrc={PersonIcon} text="我的" />
+          </div>
         </nav>
-        {children}
       </body>
     </html>
   );
