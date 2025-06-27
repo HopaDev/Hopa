@@ -26,7 +26,7 @@ export default function ResultPage() {
           top: '10px', // 图片顶部与横线顶部对齐
           left: '50%',
           transform: `translateX(-50%) translateY(${showAnimation ? '20px' : '-85%'})`,
-          transition: 'transform 3000ms ease-out'
+          transition: 'transform 3000ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'
         }}
       >
         <div className="relative w-full">

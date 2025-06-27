@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import RecentImg from '@/assets/img/Recent-tran.png';
 import BlurImg from '@/assets/img/Blur.png';
 
@@ -18,6 +19,15 @@ export default function Home() {
       </header>
 
       <main>
+        {/* 发起共识按钮 */}
+        <section className="mb-6">
+          <Link href="/launch">
+            <button className="w-full bg-gradient-to-r from-red-400 to-red-500 text-white py-4 px-6 rounded-2xl font-semibold text-lg shadow-lg hover:from-red-500 hover:to-red-600 transition-all duration-200 active:scale-95">
+              + 发起共识
+            </button>
+          </Link>
+        </section>
+
         {/* 当前共识 Section */}
         <section className="mb-8">
           <h2 className="text-xl font-bold mb-4">当前共识</h2>
