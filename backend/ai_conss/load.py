@@ -81,7 +81,7 @@ def save_consensus_template(data):
 
 if __name__ == "__main__":
     # 从本地.json文件加载数据并保存到数据库
-    with open("case.json", "r", encoding="utf-8") as f:
+    with open("ai_conss/case.json", "r", encoding="utf-8") as f:
         data = json.load(f)
     for item in data:
         template_id = save_consensus_template(item)
