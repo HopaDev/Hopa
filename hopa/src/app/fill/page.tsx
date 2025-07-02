@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   RadioQuestion, 
@@ -14,42 +14,75 @@ import {
 export default function FillPage() {
   const router = useRouter();
   
-  // 表单数据状态
+  // 基于case.json小组作业模板的表单数据状态
   const [formData, setFormData] = useState({
-    // 目标类问题
-    goal: '',
-    cooperation: [],
-    budget: '',
-    timeline: '',
-    priority: 3,
+    // 目标设定
+    qualityGoal: '',
+    investmentLevel: 3,
+    timeRange: { min: 0, max: 20 },
+    availableTime: [],
+    skills: '',
     
-    // 规则类问题
-    meetingTime: '',
-    workHours: '',
-    communication: [],
+    // 分工职责
+    primaryRole: '',
+    secondaryRoles: [],
     
-    // 边界性问题
-    responsibilities: [],
-    boundaries: '',
+    // 时间管理
+    draftDays: 3,
+    noticeTime: '',
+    inactiveHandling: '',
     
-    // 激励性问题  
-    rewards: [],
-    celebration: '',
+    // 协作规范
+    unifiedStyle: [],
+    conflictResolution: '',
+    overtimeAcceptance: 3,
     
-    // 仪式类问题
-    rituals: []
+    // 仪式感
+    closingMethods: [],
+    boundaries: ''
   });
 
+  // 页面加载时恢复保存的数据
+  useEffect(() => {
+    const savedData = localStorage.getItem('consensusFormData');
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        setFormData(prev => ({ ...prev, ...parsedData }));
+      } catch (error) {
+        console.error('恢复表单数据失败:', error);
+      }
+    }
+  }, []);
+
   const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
+    const updatedData = {
+      ...formData,
       [field]: value
-    }));
+    };
+    setFormData(updatedData);
+    
+    // 自动保存到本地存储
+    localStorage.setItem('consensusFormData', JSON.stringify(updatedData));
+  };
+
+  const handleRangeChange = (field: string, type: 'min' | 'max', value: number) => {
+    const updatedData = {
+      ...formData,
+      [field]: {
+        ...formData[field as keyof typeof formData] as { min: number; max: number },
+        [type]: value
+      }
+    };
+    setFormData(updatedData);
+    
+    // 自动保存到本地存储
+    localStorage.setItem('consensusFormData', JSON.stringify(updatedData));
   };
 
   const handleSubmit = () => {
     // 简单验证
-    const requiredFields = ['goal', 'budget', 'timeline'];
+    const requiredFields = ['qualityGoal', 'skills', 'primaryRole'];
     const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
     
     if (missingFields.length > 0) {
@@ -65,13 +98,13 @@ export default function FillPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* 头部 */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 sticky top-0 z-10">
         <div className="flex items-center justify-between px-4 py-3">
           <button 
             onClick={() => router.back()}
-            className="p-2 -ml-2"
+            className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -83,207 +116,344 @@ export default function FillPage() {
       </div>
 
       {/* 问卷内容 */}
-      <div className="px-4 py-6 pb-24">
+      <div className="px-4 py-6 pb-32">
         {/* 共识标题卡片 */}
-        <div className="bg-gradient-to-r from-[#ff5a5e] to-[#ff8a5b] rounded-2xl p-6 mb-6 text-white">
+        <div className="bg-gradient-to-r from-[#ff5a5e] via-[#ff6b4a] to-[#ff8a5b] rounded-3xl p-6 mb-6 text-white shadow-lg">
           <div className="flex items-center space-x-3 mb-3">
-            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-              <span className="text-lg">📋</span>
+            <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+              <span className="text-xl">📚</span>
             </div>
-            <h2 className="text-xl font-bold">小组作业共识问卷</h2>
+            <h2 className="text-xl font-bold">小组作业共识模板</h2>
           </div>
           <p className="text-white/90 text-sm leading-relaxed">
-            请认真填写以下问题，帮助我们更好地制定小组作业的共识方案
+            适用于2-6人参与的小组协作任务，在任务开始前明确目标、分工、规则与边界，提高协作效率和完成度
           </p>
         </div>
 
-        {/* 目标类问题 */}
+        {/* 目标设定 */}
         <div className="mb-8">
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="w-1 h-6 bg-[#ff5a5e] rounded-full"></div>
-            <h3 className="text-lg font-semibold text-gray-900">目标设定</h3>
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="w-2 h-8 bg-gradient-to-b from-[#ff5a5e] to-[#ff8a5b] rounded-full"></div>
+            <h3 className="text-xl font-bold text-gray-900">目标设定</h3>
           </div>
           
+          <RadioQuestion
+            question="1. 我们对本次小组作业的完成质量目标是？"
+            options={[
+              "达到课程基本要求即可",
+              "稍有创新，有亮点", 
+              "追求展示级别作品（争取评优）"
+            ]}
+            value={formData.qualityGoal}
+            onChange={(value) => handleInputChange('qualityGoal', value)}
+            required={true}
+          />
+
+          <RangeQuestion
+            question="2. 你期望我们完成这次作业时的整体投入程度为？"
+            min={1}
+            max={5}
+            value={formData.investmentLevel}
+            onChange={(value) => handleInputChange('investmentLevel', value)}
+            labels={['轻松', '一般', '认真', '努力', '全力以赴']}
+          />
+
+          {/* 时间范围选择 */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-4">
+            <div className="flex items-start space-x-2 mb-4">
+              <span className="text-[#ff5a5e] font-semibold text-sm">范围</span>
+              <span className="text-red-500 text-sm">*</span>
+            </div>
+            <h3 className="text-gray-900 font-medium mb-6 leading-relaxed">
+              3. 你可以投入的总时间段为？（小时）
+            </h3>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">最少时间</label>
+                <div className="px-2">
+                  <input
+                    type="range"
+                    min={0}
+                    max={30}
+                    value={formData.timeRange.min}
+                    onChange={(e) => {
+                      const newMin = Number(e.target.value);
+                      // 确保最少时间不超过最多时间
+                      if (newMin <= formData.timeRange.max) {
+                        handleRangeChange('timeRange', 'min', newMin);
+                      }
+                    }}
+                    className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer
+                               [&::-webkit-slider-thumb]:appearance-none
+                               [&::-webkit-slider-thumb]:w-6
+                               [&::-webkit-slider-thumb]:h-6
+                               [&::-webkit-slider-thumb]:rounded-full
+                               [&::-webkit-slider-thumb]:bg-white
+                               [&::-webkit-slider-thumb]:cursor-pointer
+                               [&::-webkit-slider-thumb]:shadow-lg
+                               [&::-webkit-slider-thumb]:border-2
+                               [&::-webkit-slider-thumb]:border-[#ff5a5e]"
+                    style={{
+                      background: `linear-gradient(to right, #ff5a5e 0%, #ff8a5b ${(formData.timeRange.min / 30) * 100}%, #e5e7eb ${(formData.timeRange.min / 30) * 100}%, #e5e7eb 100%)`
+                    }}
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>0小时</span>
+                    <span>30小时</span>
+                  </div>
+                </div>
+                <div className="text-center mt-3">
+                  <span className="bg-[#ff5a5e] text-white px-4 py-2 rounded-full text-sm font-medium">
+                    {formData.timeRange.min}小时
+                  </span>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">最多时间</label>
+                <div className="px-2">
+                  <input
+                    type="range"
+                    min={formData.timeRange.min}
+                    max={50}
+                    value={formData.timeRange.max}
+                    onChange={(e) => {
+                      const newMax = Number(e.target.value);
+                      // 确保最多时间不少于最少时间
+                      if (newMax >= formData.timeRange.min) {
+                        handleRangeChange('timeRange', 'max', newMax);
+                      }
+                    }}
+                    className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer
+                               [&::-webkit-slider-thumb]:appearance-none
+                               [&::-webkit-slider-thumb]:w-6
+                               [&::-webkit-slider-thumb]:h-6
+                               [&::-webkit-slider-thumb]:rounded-full
+                               [&::-webkit-slider-thumb]:bg-white
+                               [&::-webkit-slider-thumb]:cursor-pointer
+                               [&::-webkit-slider-thumb]:shadow-lg
+                               [&::-webkit-slider-thumb]:border-2
+                               [&::-webkit-slider-thumb]:border-[#ff8a5b]"
+                    style={{
+                      background: `linear-gradient(to right, #ff5a5e 0%, #ff8a5b ${((formData.timeRange.max - formData.timeRange.min) / (50 - formData.timeRange.min)) * 100}%, #e5e7eb ${((formData.timeRange.max - formData.timeRange.min) / (50 - formData.timeRange.min)) * 100}%, #e5e7eb 100%)`
+                    }}
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>{formData.timeRange.min}小时</span>
+                    <span>50小时</span>
+                  </div>
+                </div>
+                <div className="text-center mt-3">
+                  <span className="bg-[#ff8a5b] text-white px-4 py-2 rounded-full text-sm font-medium">
+                    {formData.timeRange.max}小时
+                  </span>
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 rounded-xl p-4 text-center">
+                <p className="text-sm text-gray-600">
+                  时间范围：<span className="font-semibold text-[#ff5a5e]">{formData.timeRange.min} - {formData.timeRange.max}小时</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <CheckboxQuestion
+            question="4. 以下哪些时间段你一般有空参与讨论？"
+            options={[
+              "工作日晚上（19:00–22:00）",
+              "周六全天",
+              "周日全天", 
+              "午休时间（12:00–14:00）",
+              "临时协商"
+            ]}
+            values={formData.availableTime}
+            onChange={(values) => handleInputChange('availableTime', values)}
+          />
+
           <TextQuestion
-            question="1. 请简单描述一下你们小组的共同目标或期望？（简答）"
-            value={formData.goal}
-            onChange={(value) => handleInputChange('goal', value)}
-            placeholder="请简述你们小组想要达成的目标..."
+            question="5. 请简要介绍你擅长的方向或想参与的部分"
+            value={formData.skills}
+            onChange={(value) => handleInputChange('skills', value)}
+            placeholder="如：擅长编程、文案写作、设计排版、数据分析等..."
             multiline={true}
             required={true}
           />
-
-          <CheckboxQuestion
-            question="2. 你认为我们应该采用什么方式实现有效的小组协作？"
-            options={[
-              '1分工合作，各自负责',
-              '5分协同作业',
-              '定期会议讨论进展',
-              '建立共享文档',
-              '使用协作工具'
-            ]}
-            values={formData.cooperation}
-            onChange={(values) => handleInputChange('cooperation', values)}
-          />
-
-          <TextQuestion
-            question="3. 项目预计投入资源？"
-            value={formData.budget}
-            onChange={(value) => handleInputChange('budget', value)}
-            placeholder="如：0 - 10h，或具体金额"
-            required={true}
-          />
         </div>
 
-        {/* 时间规划类问题 */}
+        {/* 分工职责 */}
         <div className="mb-8">
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="w-1 h-6 bg-[#ff5a5e] rounded-full"></div>
-            <h3 className="text-lg font-semibold text-gray-900">时间规划</h3>
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="w-2 h-8 bg-gradient-to-b from-[#ff5a5e] to-[#ff8a5b] rounded-full"></div>
+            <h3 className="text-xl font-bold text-gray-900">分工职责</h3>
           </div>
 
-          <TimeQuestion
-            question="4. 以下哪个时间段你一般容易参与讨论？（多选）"
-            value={formData.meetingTime}
-            onChange={(value) => handleInputChange('meetingTime', value)}
-          />
-
-          <DateQuestion
-            question="5. 项目截止日期"
-            value={formData.timeline}
-            onChange={(value) => handleInputChange('timeline', value)}
+          <RadioQuestion
+            question="6. 请从下列分工中选择你主要愿意承担的角色"
+            options={[
+              "技术/代码实现",
+              "资料调研与内容撰写",
+              "设计/排版与展示",
+              "沟通协调与进度管理",
+              "不确定，待讨论"
+            ]}
+            value={formData.primaryRole}
+            onChange={(value) => handleInputChange('primaryRole', value)}
             required={true}
           />
-        </div>
-
-        {/* 协作规则类问题 */}
-        <div className="mb-8">
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="w-1 h-6 bg-[#ff5a5e] rounded-full"></div>
-            <h3 className="text-lg font-semibold text-gray-900">协作规则</h3>
-          </div>
 
           <CheckboxQuestion
-            question="6. 清单了学的工作时传主要思考哪些因素？（多选）"
+            question="7. 如需承担次要职责，请选择你可接受的备选角色"
             options={[
-              '课业任务繁重度',
-              '室友/家庭沟通压力',
-              '习惯做事处理等需求量',
-              '其他个人安排'
+              "技术/代码实现",
+              "资料调研与内容撰写", 
+              "设计/排版与展示",
+              "沟通协调与进度管理"
             ]}
-            values={formData.communication}
-            onChange={(values) => handleInputChange('communication', values)}
-          />
-
-          <CheckboxQuestion
-            question="7. 你认为团队协作需要，需要制定哪些基本的工作进度？（多选）"
-            options={[
-              '按时/钟表完成',
-              '项目快速有序管理',
-              '设计/规格书沟通规则',
-              '习惯内容与过程管理'
-            ]}
-            values={formData.responsibilities}
-            onChange={(values) => handleInputChange('responsibilities', values)}
+            values={formData.secondaryRoles}
+            onChange={(values) => handleInputChange('secondaryRoles', values)}
           />
         </div>
 
-        {/* 优先级设定 */}
+        {/* 时间管理 */}
         <div className="mb-8">
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="w-1 h-6 bg-[#ff5a5e] rounded-full"></div>
-            <h3 className="text-lg font-semibold text-gray-900">优先级设定</h3>
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="w-2 h-8 bg-gradient-to-b from-[#ff5a5e] to-[#ff8a5b] rounded-full"></div>
+            <h3 className="text-xl font-bold text-gray-900">时间管理</h3>
           </div>
 
           <RangeQuestion
-            question="8. 对于整体进度管理关注，我们计划管理层级多少个百分点？"
+            question="8. 对于最终成果提交前，我们应该提前多少天完成初稿？"
             min={1}
-            max={5}
-            value={formData.priority}
-            onChange={(value) => handleInputChange('priority', value)}
-            labels={['1分', '2分', '3分', '4分', '5分']}
+            max={10}
+            value={formData.draftDays}
+            onChange={(value) => handleInputChange('draftDays', value)}
+            labels={['1天', '3天', '5天', '7天', '10天']}
+          />
+
+          <RadioQuestion
+            question="9. 你能接受的最晚开会通知提前时间是？"
+            options={[
+              "不限，随叫随到",
+              "至少提前半天",
+              "至少提前一天",
+              "至少提前两天"
+            ]}
+            value={formData.noticeTime}
+            onChange={(value) => handleInputChange('noticeTime', value)}
+          />
+
+          <RadioQuestion
+            question="10. 如果组内有成员长时间不参与，我们的处理方式是？"
+            options={[
+              "私下提醒，不公开处理",
+              "组内公示提醒一次，仍无改进将减少分工任务",
+              "报告老师，要求替换或说明情况",
+              "暂无共识，事后再议"
+            ]}
+            value={formData.inactiveHandling}
+            onChange={(value) => handleInputChange('inactiveHandling', value)}
           />
         </div>
 
-        {/* 激励机制 */}
+        {/* 协作规范 */}
         <div className="mb-8">
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="w-1 h-6 bg-[#ff5a5e] rounded-full"></div>
-            <h3 className="text-lg font-semibold text-gray-900">激励机制</h3>
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="w-2 h-8 bg-gradient-to-b from-[#ff5a5e] to-[#ff8a5b] rounded-full"></div>
+            <h3 className="text-xl font-bold text-gray-900">协作规范</h3>
           </div>
 
           <CheckboxQuestion
-            question="9. 如果后这个作业项目完成，你期待怎么庆祝方式？"
+            question="11. 你希望本次作业有统一风格的部分包括哪些？"
             options={[
-              '聚餐/聚会',
-              '小礼品交换',
-              '经验总结分享会',
-              '放松娱乐活动',
-              '其他'
+              "报告语言风格",
+              "PPT配色/排版",
+              "作品命名/文件组织方式",
+              "表达方式（用图、演示、视频等）",
+              "无所谓"
             ]}
-            values={formData.rewards}
-            onChange={(values) => handleInputChange('rewards', values)}
+            values={formData.unifiedStyle}
+            onChange={(values) => handleInputChange('unifiedStyle', values)}
+          />
+
+          <RadioQuestion
+            question="12. 当有争议时，你更倾向于通过哪种方式解决？"
+            options={[
+              "投票",
+              "顺从少数人中最愿意行动的意见",
+              "听取AI辅助建议",
+              "开会集中讨论",
+              "无偏好"
+            ]}
+            value={formData.conflictResolution}
+            onChange={(value) => handleInputChange('conflictResolution', value)}
+          />
+
+          <RangeQuestion
+            question="13. 你对出现突发任务加班的接受度？"
+            min={1}
+            max={5}
+            value={formData.overtimeAcceptance}
+            onChange={(value) => handleInputChange('overtimeAcceptance', value)}
+            labels={['完全不能接受', '不太能接受', '一般', '比较能接受', '完全没问题']}
+          />
+        </div>
+
+        {/* 仪式感与收尾 */}
+        <div className="mb-8">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="w-2 h-8 bg-gradient-to-b from-[#ff5a5e] to-[#ff8a5b] rounded-full"></div>
+            <h3 className="text-xl font-bold text-gray-900">仪式感与收尾</h3>
+          </div>
+
+          <CheckboxQuestion
+            question="14. 你认同通过什么方式为本次作业收尾？"
+            options={[
+              "成果展示/打卡截图",
+              "成员互评",
+              "小仪式/共创纪念图卡",
+              "总结文档",
+              "无需特别收尾"
+            ]}
+            values={formData.closingMethods}
+            onChange={(values) => handleInputChange('closingMethods', values)}
           />
 
           <TextQuestion
-            question="10. 你认为共识项目的资源分担制度建议？（填空）"
-            value={formData.celebration}
-            onChange={(value) => handleInputChange('celebration', value)}
-            placeholder="请描述你的建议..."
+            question="15. 你有任何特别的边界或说明要提前告知大家的吗？"
+            value={formData.boundaries}
+            onChange={(value) => handleInputChange('boundaries', value)}
+            placeholder="如：特殊作息、技能限制、沟通偏好等..."
             multiline={true}
           />
         </div>
 
-        {/* 其他建议 */}
-        <div className="mb-8">
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="w-1 h-6 bg-[#ff5a5e] rounded-full"></div>
-            <h3 className="text-lg font-semibold text-gray-900">其他建议</h3>
-          </div>
-
-                     <CheckboxQuestion
-             question="11. 当有争议时，你希望运用哪种解决方式？（多选）"
-             options={[
-               '民主投票',
-               '专人协调调解集中讨论会',
-               '小组长决定',
-               '开放委员中心',
-               '其他'
-             ]}
-             values={formData.rituals}
-             onChange={(values) => handleInputChange('rituals', values)}
-           />
-        </div>
-
         {/* 提交按钮 */}
-        <div className="mt-8">
+        <div className="mt-12">
           <button
             onClick={handleSubmit}
-            className="w-full bg-[#ff5a5e] text-white py-4 px-6 rounded-2xl font-semibold text-lg
-                       shadow-lg hover:bg-[#ff4449] transition-all duration-200 active:scale-95"
+            className="w-full bg-gradient-to-r from-[#ff5a5e] via-[#ff6b4a] to-[#ff8a5b] text-white py-5 px-6 rounded-3xl font-bold text-lg
+                       shadow-xl shadow-[#ff5a5e]/30 hover:shadow-2xl hover:shadow-[#ff5a5e]/40 
+                       hover:scale-[1.02] transition-all duration-300 active:scale-95"
           >
-            完成填写，进入签名认证
+            <span className="flex items-center justify-center space-x-2">
+              <span>完成填写，进入签名认证</span>
+              <span className="text-xl">✨</span>
+            </span>
           </button>
         </div>
       </div>
 
-      {/* 右下角语音按钮 */}
-      <button className="fixed bottom-8 right-6 w-14 h-14 bg-[#ff5a5e] rounded-full shadow-lg
-                         flex items-center justify-center z-20
-                         hover:bg-[#ff4449] transition-all duration-200 active:scale-90">
-        <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
-        </svg>
-      </button>
-
       {/* 进度指示器 */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3">
-        <div className="flex items-center justify-between text-sm text-gray-600">
-          <span>填写进度</span>
-          <span>11/11 题</span>
+      <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-gray-200/50 px-6 py-4">
+        <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+          <span className="font-medium">填写进度</span>
+          <span className="font-bold text-[#ff5a5e]">15/15 题</span>
         </div>
-        <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div className="h-full bg-[#ff5a5e] rounded-full" style={{ width: '100%' }}></div>
+        <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-[#ff5a5e] to-[#ff8a5b] rounded-full transition-all duration-500" 
+               style={{ width: '100%' }}></div>
         </div>
       </div>
     </div>

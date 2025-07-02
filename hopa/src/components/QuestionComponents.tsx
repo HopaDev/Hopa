@@ -220,33 +220,39 @@ export function RangeQuestion({
             max={max}
             value={value}
             onChange={(e) => onChange(Number(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer
+            className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer
                        [&::-webkit-slider-thumb]:appearance-none
                        [&::-webkit-slider-thumb]:w-6
                        [&::-webkit-slider-thumb]:h-6
                        [&::-webkit-slider-thumb]:rounded-full
-                       [&::-webkit-slider-thumb]:bg-[#ff5a5e]
+                       [&::-webkit-slider-thumb]:bg-white
                        [&::-webkit-slider-thumb]:cursor-pointer
                        [&::-webkit-slider-thumb]:shadow-lg
                        [&::-webkit-slider-thumb]:border-2
-                       [&::-webkit-slider-thumb]:border-white
+                       [&::-webkit-slider-thumb]:border-[#ff5a5e]
                        [&::-moz-range-thumb]:w-6
                        [&::-moz-range-thumb]:h-6
                        [&::-moz-range-thumb]:rounded-full
-                       [&::-moz-range-thumb]:bg-[#ff5a5e]
+                       [&::-moz-range-thumb]:bg-white
                        [&::-moz-range-thumb]:cursor-pointer
-                       [&::-moz-range-thumb]:border-none"
+                       [&::-moz-range-thumb]:border-2
+                       [&::-moz-range-thumb]:border-[#ff5a5e]"
             style={{
-              background: `linear-gradient(to right, #ff5a5e 0%, #ff5a5e ${((value - min) / (max - min)) * 100}%, #e5e7eb ${((value - min) / (max - min)) * 100}%, #e5e7eb 100%)`
+              background: `linear-gradient(to right, #ff5a5e 0%, #ff8a5b ${((value - min) / (max - min)) * 100}%, #e5e7eb ${((value - min) / (max - min)) * 100}%, #e5e7eb 100%)`
             }}
           />
         </div>
         
         {/* 当前值显示 */}
-        <div className="text-center mt-4">
-          <span className="bg-[#ff5a5e] text-white px-3 py-1 rounded-full text-sm font-medium">
-            {value}
-          </span>
+        <div className="relative mt-4">
+          <div 
+            className="absolute transform -translate-x-1/2" 
+            style={{ left: `${((value - min) / (max - min)) * 100}%` }}
+          >
+            <div className="bg-[#ff5a5e] text-white px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap">
+              {value}
+            </div>
+          </div>
         </div>
       </div>
     </div>
