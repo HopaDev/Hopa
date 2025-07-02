@@ -6,6 +6,7 @@ import NavButton from "@/components/NavButton";
 import HomeIcon from "@/assets/img/Home.png";
 import LaunchIcon from "@/assets/img/Launch.png";
 import PersonIcon from "@/assets/img/Person.png";
+import ConditionalNavigation from "@/components/ConditionalNavigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,15 +30,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      </head>      
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <main className="pb-24">{children}</main> {/* Add padding to bottom to avoid overlap */}
-        <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-11/12 max-w-sm mx-auto bg-gray-100/70 backdrop-blur-lg rounded-full shadow-lg p-1">
-          <div className="flex justify-around items-center">
-            <NavButton href="/" imgSrc={HomeIcon} text="首页" />
-            <NavButton href="/launch" imgSrc={LaunchIcon} text="发起" />
-            <NavButton href="/mypage" imgSrc={PersonIcon} text="我的" />
-          </div>
-        </nav>
+        <main className="pb-24">{children}</main>
+        <ConditionalNavigation />
       </body>
     </html>
   );
