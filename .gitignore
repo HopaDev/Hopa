@@ -45,3 +45,5 @@ next-env.d.ts
 # 环境及缓存
 venv
 __pycache__
+images
+.cursor
