@@ -106,7 +106,7 @@ export default function LaunchPage() {
           </div>
           
           {/* 固定中间 - 标题内容和按钮 */}
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-full">
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-full mt-10">
             <div className="text-center font-alimama w-full">
               <h1
                 className="text-2xl font-bold text-black whitespace-nowrap opacity-0 animate-fade-in"
@@ -122,7 +122,7 @@ export default function LaunchPage() {
               </h2>
               
               {/* 五个按钮组件 - 可滑动轮播 */}
-              <div className="mt-8 w-full">
+              <div className="mt-1 w-full">
                 <IconButtonCarousel
                   delay={2000} // 2秒后显示
                   buttons={[
@@ -166,7 +166,7 @@ export default function LaunchPage() {
                     className="flex-1 bg-transparent h-full px-4 text-black text-base outline-none placeholder-gray-400"
                   />
                   <button
-                    className="pr-4 text-gray-500 text-xl"
+                    className="pr-8 text-gray-500 text-xl"
                     onClick={handleSendMessage}
                   >
                     <Image
@@ -223,7 +223,7 @@ export default function LaunchPage() {
                     className="flex-1 bg-transparent h-full px-4 text-black text-base outline-none placeholder-gray-400"
                   />
                   <button
-                    className="pr-4 text-gray-500 text-xl"
+                    className="pr-8 text-gray-500 text-xl"
                     onClick={handleSendMessage}
                   >
                     <Image

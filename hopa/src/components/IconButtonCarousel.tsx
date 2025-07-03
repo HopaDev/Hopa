@@ -64,10 +64,31 @@ export default function IconButtonCarousel({ buttons, delay = 0 }: IconButtonCar
     };
   }, [isDragging]);
 
+  // 计算动态间距总和的辅助函数
+  const calculateTotalSpacing = (fromIndex: number, toIndex: number, effectiveCenter: number) => {
+    let totalSpacing = 0;
+    const start = Math.min(fromIndex, toIndex);
+    const end = Math.max(fromIndex, toIndex);
+    
+    for (let i = start; i < end; i++) {
+      const currentDistance = Math.abs(i - effectiveCenter);
+      const nextDistance = Math.abs((i + 1) - effectiveCenter);
+      
+      const currentScale = Math.max(0.5, 1 - currentDistance * 0.2);
+      const nextScale = Math.max(0.5, 1 - nextDistance * 0.2);
+      
+      const avgScale = (currentScale + nextScale) / 2;
+      const spacing = BUTTON_SPACING * (0.7 + avgScale * 0.3);
+      
+      totalSpacing += spacing;
+    }
+    
+    return totalSpacing;
+  };
+
   // 计算边界阻力
   const getBoundaryResistance = (translateX: number, currentIndex: number) => {
-    const dragOffset = translateX / BUTTON_SPACING;
-    const effectiveCenter = currentIndex - dragOffset;
+    const effectiveCenter = currentIndex - (translateX / BUTTON_SPACING);
     
     // 计算超出边界的距离
     let overflowDistance = 0;
@@ -88,18 +109,19 @@ export default function IconButtonCarousel({ buttons, delay = 0 }: IconButtonCar
 
   // 应用边界限制的translateX
   const getConstrainedTranslateX = (newTranslateX: number) => {
-    const dragOffset = newTranslateX / BUTTON_SPACING;
-    const effectiveCenter = currentIndex - dragOffset;
+    const effectiveCenter = currentIndex - (newTranslateX / BUTTON_SPACING);
     
     // 最大允许的超出距离（1.5个按钮单位）
     const maxOverflow = 1.5;
     
     if (effectiveCenter < -maxOverflow) {
-      // 限制左边界
-      return (currentIndex + maxOverflow) * BUTTON_SPACING;
+      // 限制左边界 - 使用动态间距计算
+      const maxLeftSpacing = calculateTotalSpacing(0, currentIndex, currentIndex + maxOverflow);
+      return maxLeftSpacing;
     } else if (effectiveCenter > buttons.length - 1 + maxOverflow) {
-      // 限制右边界
-      return (currentIndex - (buttons.length - 1 + maxOverflow)) * BUTTON_SPACING;
+      // 限制右边界 - 使用动态间距计算
+      const maxRightSpacing = calculateTotalSpacing(currentIndex, buttons.length - 1, currentIndex - (buttons.length - 1 + maxOverflow));
+      return -maxRightSpacing;
     }
     
     return newTranslateX;
@@ -118,15 +140,58 @@ export default function IconButtonCarousel({ buttons, delay = 0 }: IconButtonCar
     const opacity = Math.max(0.4, 1 - distance * 0.25);
     const zIndex = Math.max(1, 10 - Math.floor(distance));
     
-    // 计算相对于中心的偏移位置 - 增大间距
-    const baseOffset = (index - currentIndex) * BUTTON_SPACING;
-    const totalOffset = baseOffset + translateX;
+    // 计算选中状态混合比例
+    // 当距离为0时，完全选中（比例为1）
+    // 当距离为selectThreshold时，完全不选中（比例为0）
+    const selectThreshold = 0.8;
+    let selectBlendRatio = 0;
+    if (distance <= selectThreshold) {
+      // 使用平滑的衰减函数
+      selectBlendRatio = Math.max(0, 1 - (distance / selectThreshold));
+      // 应用更平滑的曲线
+      selectBlendRatio = Math.pow(selectBlendRatio, 0.8);
+    }
+
+    // 动态计算间距：考虑按钮缩放对视觉间距的影响
+    const calculateDynamicOffset = (targetIndex: number) => {
+      let totalOffset = 0;
+      const start = Math.min(currentIndex, targetIndex);
+      const end = Math.max(currentIndex, targetIndex);
+      const direction = targetIndex > currentIndex ? 1 : -1;
+      
+      for (let i = start; i < end; i++) {
+        // 计算当前按钮和下一个按钮的距离中心的位置
+        const currentDistance = Math.abs(i - effectiveCenter);
+        const nextDistance = Math.abs((i + 1) - effectiveCenter);
+        
+        // 计算两个按钮的缩放比例
+        const currentScale = Math.max(0.5, 1 - currentDistance * 0.2);
+        const nextScale = Math.max(0.5, 1 - nextDistance * 0.2);
+        
+        // 基础间距
+        let spacing = BUTTON_SPACING;
+        
+        // 根据缩放比例调整间距：缩放越小的按钮，间距应该相应减小
+        // 使用两个按钮的平均缩放比例来计算间距
+        const avgScale = (currentScale + nextScale) / 2;
+        spacing = spacing * (0.7 + avgScale * 0.3); // 保持最小70%的间距
+        
+        totalOffset += spacing * direction;
+      }
+      
+      return totalOffset;
+    };
+    
+    // 计算动态偏移
+    const dynamicOffset = calculateDynamicOffset(index);
+    const totalOffset = dynamicOffset + translateX;
     
     return {
       transform: `translateX(${totalOffset}px) scale(${scale})`,
       opacity,
       zIndex,
       transition: (isDragging || isInertiaScrolling) ? 'none' : 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+      selectBlendRatio, // 添加混合比例到返回值
     };
   };
 
@@ -143,7 +208,10 @@ export default function IconButtonCarousel({ buttons, delay = 0 }: IconButtonCar
     
     setIsDragging(true);
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    setStartX(clientX);
+    
+    // 关键修改：考虑当前的 translateX 状态
+    // 将 startX 调整为能够保持当前位置的值
+    setStartX(clientX - translateX);
     
     // 初始化速度计算
     lastMoveTimeRef.current = Date.now();
@@ -204,8 +272,7 @@ export default function IconButtonCarousel({ buttons, delay = 0 }: IconButtonCar
       setTranslateX(currentTranslateX);
       
       // 检查是否在边界外，如果是，增加额外阻力
-      const dragOffset = currentTranslateX / BUTTON_SPACING;
-      const effectiveCenter = currentIndex - dragOffset;
+      const effectiveCenter = currentIndex - (currentTranslateX / BUTTON_SPACING);
       const isOutOfBounds = effectiveCenter < 0 || effectiveCenter > buttons.length - 1;
       
       if (isOutOfBounds) {
@@ -227,8 +294,7 @@ export default function IconButtonCarousel({ buttons, delay = 0 }: IconButtonCar
   
   // 结束位置计算
   const finalizePosition = (finalTranslateX: number) => {
-    const dragOffset = finalTranslateX / BUTTON_SPACING;
-    const effectiveCenter = currentIndex - dragOffset;
+    const effectiveCenter = currentIndex - (finalTranslateX / BUTTON_SPACING);
     let closestIndex = Math.round(effectiveCenter);
     closestIndex = Math.max(0, Math.min(buttons.length - 1, closestIndex));
     
@@ -265,7 +331,7 @@ export default function IconButtonCarousel({ buttons, delay = 0 }: IconButtonCar
 
   return (
     <div 
-      className={`relative w-full mx-auto h-36 flex items-center justify-center transition-all duration-500 overflow-hidden ${
+      className={`relative w-full mx-auto h-48 flex items-center justify-center transition-all duration-500 overflow-hidden ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
@@ -286,43 +352,37 @@ export default function IconButtonCarousel({ buttons, delay = 0 }: IconButtonCar
         onTouchMove={handleDragMove}
         onTouchEnd={handleDragEnd}
       >
-        {buttons.map((button, index) => (
-          <div
-            key={index}
-            className="absolute flex items-center justify-center"
-            style={{
-              left: '50%',
-              top: '50%',
-              width: '80px',
-              height: '80px',
-              marginLeft: '-40px',
-              marginTop: '-40px',
-              ...getButtonStyle(index),
-              pointerEvents: isDragging ? 'none' : 'auto', // 拖拽时禁用点击
-            }}
-          >
-            <IconButton
-              icon={button.icon}
-              text={button.text}
-              onClick={() => handleButtonClick(index, button.onClick)}
-              className="w-20 h-20"
-              delay={0} // 由父组件控制显示时机
-            />
-          </div>
-        ))}
-      </div>
-      
-      {/* 指示器 */}
-      <div className="absolute bottom-3 flex space-x-2 z-30">
-        {buttons.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === currentIndex ? 'bg-gray-600 scale-125' : 'bg-gray-300 hover:bg-gray-400'
-            }`}
-          />
-        ))}
+        {buttons.map((button, index) => {
+          const buttonStyle = getButtonStyle(index);
+          const { selectBlendRatio, ...styleProps } = buttonStyle;
+          
+          return (
+            <div
+              key={index}
+              className="absolute flex items-center justify-center"
+              style={{
+                left: '50%',
+                top: '50%',
+                width: '80px',
+                height: '80px',
+                marginLeft: '-40px',
+                marginTop: '-40px',
+                ...styleProps,
+                pointerEvents: isDragging ? 'none' : 'auto', // 拖拽时禁用点击
+              }}
+            >
+              <IconButton
+                icon={button.icon}
+                text={button.text}
+                onClick={() => handleButtonClick(index, button.onClick)}
+                className="w-20 h-20"
+                delay={0} // 由父组件控制显示时机
+                selectBlendRatio={selectBlendRatio} // 传递混合比例
+                disableTransition={isDragging || isInertiaScrolling} // 在拖拽或惯性滚动时禁用过渡
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
