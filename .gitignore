@@ -41,3 +41,9 @@ yarn-error.log*
 next-env.d.ts
 
 .idea
+
+# 环境及缓存
+venv
+__pycache__
+images
+.cursor
