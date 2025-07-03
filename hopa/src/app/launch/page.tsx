@@ -153,7 +153,7 @@ export default function LaunchPage() {
                     className="pr-4 text-gray-500 text-xl"
                     onClick={handleSendMessage}
                   >
-                    ⬆️
+                    》
                   </button>
                 </div>
               </div>
