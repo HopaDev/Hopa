@@ -2,6 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import CustomSign from '@/assets/img/sign/custom.png';
+import HandwriteSign from '@/assets/img/sign/handwrite.png';
+import nfcSign from '@/assets/img/sign/nfc.png';
+import voiceSign from '@/assets/img/sign/voice.png';
+import { StaticImageData } from 'next/image';
+import Image from 'next/image';
 
 type SignatureState = 'result' | 'method' | 'signing';
 type SignatureMethod = 'quick' | 'custom' | 'voice' | 'handwrite' | 'nfc';
@@ -16,6 +22,7 @@ interface FormData {
 }
 
 interface SignatureOption {
+  src: StaticImageData;
   id: SignatureMethod;
   name: string;
   icon: string;
@@ -46,14 +53,16 @@ export default function SignPage() {
   const [recordingTime, setRecordingTime] = useState(0);
 
   const signatureOptions: SignatureOption[] = [
+    // {
+    //   src:"../../assets/img/sign/quick.png",
+    //   id: 'quick',
+    //   name: '快速签名',
+    //   icon: '⚡',
+    //   description: '一键完成签名认证',
+    //   color: 'from-yellow-400 to-orange-500'
+    // },
     {
-      id: 'quick',
-      name: '快速签名',
-      icon: '⚡',
-      description: '一键完成签名认证',
-      color: 'from-yellow-400 to-orange-500'
-    },
-    {
+      src: CustomSign,
       id: 'custom',
       name: '个性化签名',
       icon: '🎨',
@@ -61,6 +70,7 @@ export default function SignPage() {
       color: 'from-pink-400 to-purple-500'
     },
     {
+      src: voiceSign,
       id: 'voice',
       name: '语音签名',
       icon: '🎤',
@@ -68,6 +78,7 @@ export default function SignPage() {
       color: 'from-blue-400 to-indigo-500'
     },
     {
+      src: HandwriteSign,
       id: 'handwrite',
       name: '手写签名',
       icon: '✍️',
@@ -75,6 +86,7 @@ export default function SignPage() {
       color: 'from-green-400 to-emerald-500'
     },
     {
+      src: nfcSign,
       id: 'nfc',
       name: 'NFC签名',
       icon: '📱',
@@ -329,7 +341,8 @@ export default function SignPage() {
               <p className="text-gray-600">每一种方式都能体现您的个性</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {signatureOptions.map((option, index) => (
                 <div
                   key={option.id}
@@ -337,33 +350,35 @@ export default function SignPage() {
                   onMouseEnter={() => setHoveredMethod(option.id)}
                   onClick={() => handleMethodSelect(option.id)}
                 >
+                  <div>
+                  {/*
                   <div className={`bg-white/90 backdrop-blur-sm rounded-3xl p-8 border border-gray-200/50 
                                    shadow-xl hover:shadow-2xl transition-all duration-500 
                                    hover:scale-105 hover:-translate-y-2 relative overflow-hidden
                                    ${hoveredMethod === option.id ? 'ring-2 ring-[#ff5a5e]/50' : ''}`}>
                     
-                    {/* 背景渐变装饰 */}
+                    {// 背景渐变装饰 }
                     <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${option.color} 
                                      rounded-full opacity-10 transform translate-x-8 -translate-y-8
                                      group-hover:scale-150 transition-transform duration-500`}></div>
                     
-                    {/* 图标 */}
-                    <div className={`w-16 h-16 bg-gradient-to-br ${option.color} rounded-2xl 
+                    {// 图标 }
+                    <div className={`w-12 h-12 bg-gradient-to-br ${option.color} rounded-2xl 
                                      flex items-center justify-center mb-6 relative z-10
                                      group-hover:scale-110 transition-transform duration-300`}>
                       <span className="text-3xl">{option.icon}</span>
                     </div>
                     
-                    {/* 内容 */}
+                    {// 内容 }
                     <div className="relative z-10">
-                      <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#ff5a5e] transition-colors duration-300">
+                      <h3 className="text-x2 font-bold text-gray-900 mb-3 group-hover:text-[#ff5a5e] transition-colors duration-300">
                         {option.name}
                       </h3>
-                      <p className="text-gray-600 text-sm leading-relaxed mb-6">
+                      <p className="text-gray-600 text-sm leading-relaxed mb-">
                         {option.description}
                       </p>
                       
-                      {/* 进入按钮 */}
+                      {// 进入按钮 }
                       <div className={`flex items-center justify-center py-3 px-6 bg-gradient-to-r ${option.color} 
                                        text-white rounded-xl font-medium opacity-0 group-hover:opacity-100 
                                        transform translate-y-2 group-hover:translate-y-0 transition-all duration-300`}>
@@ -374,11 +389,27 @@ export default function SignPage() {
                       </div>
                     </div>
                     
-                    {/* 装饰点 */}
+                    {// 装饰点 }
                     <div className="absolute bottom-4 right-4 w-2 h-2 bg-[#ff5a5e]/30 rounded-full"></div>
                     <div className="absolute bottom-6 right-6 w-1 h-1 bg-[#ff8a5b]/40 rounded-full"></div>
+                  
                   </div>
+                  */}
+                  </div>
+
+                  {/* <div className={`bg-white/90 backdrop-blur-sm rounded-3xl  border border-gray-200/50 
+                                   shadow-xl hover:shadow-2xl transition-all duration-500 
+                                   hover:scale-105 hover:-translate-y-2 relative overflow-hidden
+                                   ${hoveredMethod === option.id ? 'ring-2 ring-[#ff5a5e]/50' : ''}`}> */}
+
+                    <div>
+                  <Image src={option.src} alt={option.name} className="w-32 h-32 mb-0 mx-0" />
+                
+
+                  </div>  
+
                 </div>
+                
               ))}
             </div>
             
