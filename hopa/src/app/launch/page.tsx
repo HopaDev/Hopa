@@ -244,7 +244,7 @@ export default function LaunchPage() {
             ref={chatAreaRef}
             className="h-full pt-48 pb-20 overflow-y-auto bg-white"
           >
-            <div className="w-full px-4 py-4">
+            <div className="w-full px-4 py-9">
               {messages.map((msg, index) => {
                 if (msg.type === 'user') {
                   return <UserMessage key={msg.id || `user-${index}`} message={msg.content} />;
