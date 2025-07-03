@@ -315,22 +315,22 @@ export default function SignPage() {
       <div className="absolute inset-0 pointer-events-none">
         {/* 左上角装饰 */}
         <div className="absolute top-16 left-4 opacity-60">
-          <Image src={Bg1} alt="decoration" className="w-32 h-32 object-contain" />
+          <Image src={Bg1} alt="decoration" className="w-40 h-40 object-contain" />
         </div>
         
         {/* 右上角装饰 */}
-        <div className="absolute top-16 right-4 opacity-60">
-          <Image src={Bg2} alt="decoration" className="w-32 h-32 object-contain" />
+        <div className="absolute top-20 right-4 opacity-60">
+          <Image src={Bg2} alt="decoration" className="w-40 h-40 object-contain" />
         </div>
         
         {/* 左下角装饰 */}
         <div className="absolute bottom-32 left-4 opacity-60">
-          <Image src={Bg3} alt="decoration" className="w-32 h-32 object-contain" />
+          <Image src={Bg3} alt="decoration" className="w-40 h-40 object-contain" />
         </div>
         
         {/* 右下角装饰 */}
         <div className="absolute bottom-32 right-4 opacity-60">
-          <Image src={Bg4} alt="decoration" className="w-32 h-32 object-contain" />
+          <Image src={Bg4} alt="decoration" className="w-40 h-40 object-contain" />
         </div>
       </div>
 
@@ -450,7 +450,7 @@ export default function SignPage() {
                   className="group cursor-pointer"
                   onClick={() => handleMethodSelect(option.id)}
                 >
-                  <div className="relative overflow-hidden rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                  <div className="relative overflow-hidden rounded-3xl transition-all duration-300 hover:scale-105">
                     {/* 背景图片完全占满 */}
                     <div className="relative w-full h-48">
                       <Image 
