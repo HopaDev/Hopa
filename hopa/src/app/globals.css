@@ -109,3 +109,79 @@ html {
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 }
+
+/* AI消息渐变动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+/* 共识模板浮现动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+/* 用户消息气泡浮现动画 */
+@keyframes fade-in-up {
+  from { 
+    opacity: 0; 
+    transform: translateY(15px) translateX(-5px) scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) translateX(0) scale(1); 
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s cubic-bezier(0.4,0,0.2,1) forwards;
+  opacity: 0;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.8s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+/* 共识卡片浮现动画 */
+@keyframes fade-in-consensus {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px) scale(0.8); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+}
+
+.animate-fade-in-consensus {
+  animation: fade-in-consensus 0.8s cubic-bezier(0.4,0,0.2,1) forwards;
+  opacity: 0;
+}

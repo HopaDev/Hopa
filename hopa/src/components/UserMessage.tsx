@@ -3,7 +3,8 @@ interface UserMessageProps {
 }
 
 export default function UserMessage({ message }: UserMessageProps) {
-  return (    <div className="flex justify-end mb-4 px-4">
+  return (
+    <div className="flex justify-end mb-4 px-4 opacity-0 animate-fade-in-up">
       <div className="relative max-w-[70%]">
         {/* 用户消息气泡三角形 */}
         <div className="absolute right-0 top-3 transform translate-x-full z-10">
