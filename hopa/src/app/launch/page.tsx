@@ -12,6 +12,8 @@ import UserMessage from '../../components/UserMessage';
 import AiMessage from '../../components/AiMessage';
 import ConsensusCard from '../../components/ConsensusCard';
 import AnimatedConsensusCard from '../../components/AnimatedConsensusCard';
+import IconButtonCarousel from '../../components/IconButtonCarousel';
+import SendPng from '../../assets/img/launch/send.png';
 
 
 export default function LaunchPage() {
@@ -103,9 +105,9 @@ export default function LaunchPage() {
             />
           </div>
           
-          {/* 固定中间 - 标题内容 */}
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-full px-8">
-            <div className="text-center font-alimama">
+          {/* 固定中间 - 标题内容和按钮 */}
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-full mt-10">
+            <div className="text-center font-alimama w-full">
               <h1
                 className="text-2xl font-bold text-black whitespace-nowrap opacity-0 animate-fade-in"
                 style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
@@ -118,6 +120,20 @@ export default function LaunchPage() {
               >
                 然后开启你们的合拍之旅
               </h2>
+              
+              {/* 五个按钮组件 - 可滑动轮播 */}
+              <div className="mt-1 w-full">
+                <IconButtonCarousel
+                  delay={2000} // 2秒后显示
+                  buttons={[
+                    { icon: "file", text: "问答" },
+                    { icon: "coffee", text: "约谈" },
+                    { icon: "face", text: "好友会面" },
+                    { icon: "book", text: "小组阅读" },
+                    { icon: "travel", text: "旅行" },
+                  ]}
+                />
+              </div>
             </div>
           </div>
           
@@ -150,10 +166,16 @@ export default function LaunchPage() {
                     className="flex-1 bg-transparent h-full px-4 text-black text-base outline-none placeholder-gray-400"
                   />
                   <button
-                    className="pr-4 text-gray-500 text-xl"
+                    className="pr-8 text-gray-500 text-xl"
                     onClick={handleSendMessage}
                   >
-                    》
+                    <Image
+                      src={SendPng}
+                      alt="send"
+                      width={24}
+                      height={24}
+                      className="w-6 h-6"
+                    />
                   </button>
                 </div>
               </div>
@@ -201,10 +223,16 @@ export default function LaunchPage() {
                     className="flex-1 bg-transparent h-full px-4 text-black text-base outline-none placeholder-gray-400"
                   />
                   <button
-                    className="pr-4 text-gray-500 text-xl"
+                    className="pr-8 text-gray-500 text-xl"
                     onClick={handleSendMessage}
                   >
-                    ⬆️
+                    <Image
+                      src={SendPng}
+                      alt="send"
+                      width={24}
+                      height={24}
+                      className="w-6 h-6"
+                    />
                   </button>
                 </div>
               </div>
@@ -216,7 +244,7 @@ export default function LaunchPage() {
             ref={chatAreaRef}
             className="h-full pt-48 pb-20 overflow-y-auto bg-white"
           >
-            <div className="w-full px-4 py-4">
+            <div className="w-full px-4 py-9">
               {messages.map((msg, index) => {
                 if (msg.type === 'user') {
                   return <UserMessage key={msg.id || `user-${index}`} message={msg.content} />;
