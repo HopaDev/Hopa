@@ -8,6 +8,8 @@ import nfcSign from '@/assets/img/sign/nfc.png';
 import voiceSign from '@/assets/img/sign/voice.png';
 import Bg1 from '@/assets/img/sign/bg1.png';
 import Bg2 from '@/assets/img/sign/bg2.png';
+import Bg3 from '@/assets/img/sign/bg3.svg';
+import Bg4 from '@/assets/img/sign/bg4.svg';
 import { StaticImageData } from 'next/image';
 import Image from 'next/image';
 
@@ -311,45 +313,24 @@ export default function SignPage() {
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-orange-50 to-red-50 relative overflow-hidden">
       {/* 背景装饰 - 使用提供的图片 */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* 左侧小人装饰 */}
-        <div className="absolute top-32 left-4 opacity-80">
-          <Image src={Bg1} alt="decoration" className="w-24 h-24" />
+        {/* 左上角装饰 */}
+        <div className="absolute top-16 left-4 opacity-60">
+          <Image src={Bg1} alt="decoration" className="w-32 h-32 object-contain" />
         </div>
         
-        {/* 右侧小人装饰 */}
-        <div className="absolute top-40 right-4 opacity-80">
-          <Image src={Bg2} alt="decoration" className="w-24 h-24" />
+        {/* 右上角装饰 */}
+        <div className="absolute top-16 right-4 opacity-60">
+          <Image src={Bg2} alt="decoration" className="w-32 h-32 object-contain" />
         </div>
         
-        {/* 彩色光晕背景 - 使用SVG */}
-        <div className="absolute inset-0">
-          <svg width="100%" height="100%" viewBox="0 0 375 812" className="absolute inset-0">
-            <defs>
-              <filter id="blur">
-                <feGaussianBlur stdDeviation="60" />
-              </filter>
-            </defs>
-            <ellipse cx="90" cy="200" rx="60" ry="80" fill="url(#gradient1)" filter="url(#blur)" opacity="0.3" />
-            <ellipse cx="300" cy="150" rx="50" ry="70" fill="url(#gradient2)" filter="url(#blur)" opacity="0.3" />
-            <ellipse cx="200" cy="450" rx="70" ry="90" fill="url(#gradient3)" filter="url(#blur)" opacity="0.3" />
-            <ellipse cx="80" cy="650" rx="50" ry="70" fill="url(#gradient4)" filter="url(#blur)" opacity="0.3" />
-            <linearGradient id="gradient1">
-              <stop offset="0%" stopColor="#ff5a5e" />
-              <stop offset="100%" stopColor="#ff8a5b" />
-            </linearGradient>
-            <linearGradient id="gradient2">
-              <stop offset="0%" stopColor="#ffa726" />
-              <stop offset="100%" stopColor="#ff7043" />
-            </linearGradient>
-            <linearGradient id="gradient3">
-              <stop offset="0%" stopColor="#ff6b6b" />
-              <stop offset="100%" stopColor="#ffa726" />
-            </linearGradient>
-            <linearGradient id="gradient4">
-              <stop offset="0%" stopColor="#ff8a80" />
-              <stop offset="100%" stopColor="#ff5722" />
-            </linearGradient>
-          </svg>
+        {/* 左下角装饰 */}
+        <div className="absolute bottom-32 left-4 opacity-60">
+          <Image src={Bg3} alt="decoration" className="w-32 h-32 object-contain" />
+        </div>
+        
+        {/* 右下角装饰 */}
+        <div className="absolute bottom-32 right-4 opacity-60">
+          <Image src={Bg4} alt="decoration" className="w-32 h-32 object-contain" />
         </div>
       </div>
 
@@ -461,7 +442,7 @@ export default function SignPage() {
               <p className="text-gray-600 text-sm">每一种方式都能体现您的个性</p>
             </div>
 
-            {/* 签名方式选择 - 改为2x2网格布局 */}
+            {/* 签名方式选择 - 改为2x2网格布局，图片完全占满 */}
             <div className="grid grid-cols-2 gap-4 mb-8">
               {signatureOptions.map((option) => (
                 <div
@@ -469,25 +450,30 @@ export default function SignPage() {
                   className="group cursor-pointer"
                   onClick={() => handleMethodSelect(option.id)}
                 >
-                  <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-gray-200/50 shadow-lg
-                                  hover:shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden">
-                    {/* 背景装饰 */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${option.color} opacity-5`}></div>
-                    
-                    {/* 图片 */}
-                    <div className="relative z-10 flex flex-col items-center">
-                      <div className="mb-4">
-                        <Image src={option.src} alt={option.name} className="w-16 h-16 object-contain" />
+                  <div className="relative overflow-hidden rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    {/* 背景图片完全占满 */}
+                    <div className="relative w-full h-48">
+                      <Image 
+                        src={option.src} 
+                        alt={option.name} 
+                        fill
+                        className="object-cover"
+                      />
+                      
+                      {/* 渐变遮罩 */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                      
+                      {/* 文字内容 */}
+                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                        <h3 className="text-lg font-bold mb-1">{option.name}</h3>
+                        <p className="text-sm opacity-90">{option.description}</p>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-2 text-center">{option.name}</h3>
-                      <p className="text-gray-600 text-xs text-center leading-relaxed">{option.description}</p>
-                    </div>
-                    
-                    {/* 选择指示器 */}
-                    <div className="absolute top-3 right-3 w-6 h-6 bg-gradient-to-r from-[#ff5a5e] to-[#ff8a5b] 
-                                    rounded-full flex items-center justify-center text-white text-xs font-bold opacity-0 
-                                    group-hover:opacity-100 transition-opacity duration-300">
-                      ✓
+                      
+                      {/* 选择指示器 */}
+                      <div className="absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center
+                                      opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span className="text-[#ff5a5e] text-sm font-bold">✓</span>
+                      </div>
                     </div>
                   </div>
                 </div>
