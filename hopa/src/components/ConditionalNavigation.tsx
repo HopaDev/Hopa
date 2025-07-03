@@ -9,10 +9,11 @@ import HomeIcon from "@/assets/img/navi/home_icon.png";
 import GroupIcon from "@/assets/img/navi/group_icon.png";
 import MessageIcon from "@/assets/img/navi/message_icon.png";
 import MypageIcon from "@/assets/img/navi/mypage_icon.png";
+import path from 'path';
 
 export default function ConditionalNavigation() {
   const pathname = usePathname();
-  const hideNavigation = pathname === '/launch' || pathname === '/result' || pathname === '/fill';
+  const hideNavigation = pathname === '/launch' || pathname === '/result' || pathname === '/fill' || pathname == '/sign';
 
   useEffect(() => {
     const main = document.querySelector('main');
