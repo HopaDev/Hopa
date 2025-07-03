@@ -56,7 +56,7 @@ export default function Home() {
       </div>
       
       {/* 头像 - 左上角 */}
-      <div className="absolute top-5 left-3 z-2">
+      <div className="absolute top-12 left-3 z-2">
         <Image 
           src={Avatar} 
           alt="avatar" 
@@ -72,7 +72,7 @@ export default function Home() {
       </div>
 
       {/* 设置 - 右上角 */}
-      <div className="absolute top-8 right-6 z-1">
+      <div className="absolute top-16 right-6 z-1">
         <Image 
           src={Settings} 
           alt="settings" 

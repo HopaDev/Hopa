@@ -83,7 +83,7 @@ export default function LaunchPage() {
       {/* 返回按钮 - 浮于所有元素之上 */}
       <button
         onClick={handleBackToHome}
-        className="fixed top-5 left-5 z-50"
+        className="fixed top-16 left-5 z-50"
       >
         <Image
           src={BackArrowPNG}
@@ -242,7 +242,7 @@ export default function LaunchPage() {
           {/* 聊天区域 */}
           <div 
             ref={chatAreaRef}
-            className="h-full pt-48 pb-20 overflow-y-auto bg-white"
+            className="h-full pt-56 pb-20 overflow-y-auto bg-white"
           >
             <div className="w-full px-4 py-9">
               {messages.map((msg, index) => {
