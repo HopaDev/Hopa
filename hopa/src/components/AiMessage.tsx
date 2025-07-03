@@ -1,35 +1,53 @@
 import Image from 'next/image';
-import ConsensusCard from './ConsensusCard';
+import { useState, useEffect } from 'react';
 
 interface AiMessageProps {
   message?: string;
   isPlaceholder?: boolean;
-  showConsensusCard?: boolean;
 }
 
-export default function AiMessage({ message = "正在思考中...", isPlaceholder = false, showConsensusCard = false }: AiMessageProps) {
+export default function AiMessage({ message = "正在思考中...", isPlaceholder = false }: AiMessageProps) {
+  const [displayedText, setDisplayedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    setDisplayedText('');
+    setCurrentIndex(0);
+  }, [message]);
+
+  useEffect(() => {
+    if (currentIndex < message.length) {
+      const timer = setTimeout(() => {
+        setDisplayedText(prev => prev + message[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, 30); // 加快速度到30毫秒一个字符，更接近ChatGPT的速度
+      
+      return () => clearTimeout(timer);
+    }
+  }, [currentIndex, message]);
+
   return (
     <div className="flex items-start mb-4 px-4">
-      {/* <Image src={LogoPNG} alt="logo" width={40} height={40} className="flex-shrink-0" /> */}
       <div className="relative ml-3 max-w-[80%]">
-        {/* AI消息气泡三角形 */}
-        <div className="absolute left-0 top-3 transform -translate-x-full z-10">
-          <div className="w-0 h-0 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-r-[8px] border-r-[#EAEAEA]"></div>
-        </div>
-        <div className="bg-[#EAEAEA] text-black p-3 rounded-2xl rounded-tl-none">
+        <div className="text-black">
           <p className={`text-base ${isPlaceholder ? 'text-gray-500 italic' : ''}`}>
-            {message}
+            <span className="inline-block">
+              {displayedText.split('').map((char, index) => (
+                <span
+                  key={index}
+                  className="inline-block animate-fadeIn"
+                  style={{
+                    animationDelay: `${index * 30}ms`,
+                    animationDuration: '300ms',
+                    animationFillMode: 'both'
+                  }}
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </span>
+              ))}
+            </span>
           </p>
         </div>
-        {/* 共识卡片 */}
-        {showConsensusCard && (
-          <ConsensusCard 
-            title="小组作业共识模板"
-            description="适用于2-6人参与的小组协作任务
-              在任务开始前明确目标、分工、规则与边界
-              提高协作效率和完成度"
-          />
-        )}
       </div>
     </div>
   );

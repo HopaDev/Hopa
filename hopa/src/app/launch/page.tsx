@@ -4,52 +4,41 @@ import Image from 'next/image';
 import BackgroundPNG from '../../assets/img/launch/background.png';
 import InputPNG from '../../assets/img/launch/input.png';
 import MicrophonePNG from '../../assets/img/launch/microphone.png';
+import ModelPNG from '../../assets/img/launch/model.png';
+import BackArrowPNG from '../../assets/img/launch/back_arrow.png';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import UserMessage from '../../components/UserMessage';
 import AiMessage from '../../components/AiMessage';
+import ConsensusCard from '../../components/ConsensusCard';
+import AnimatedConsensusCard from '../../components/AnimatedConsensusCard';
 
-const NavButton = ({
-  label,
-  selected,
-  icon,
-}: {
-  label: string;
-  selected?: boolean;
-  icon: React.ReactNode;
-}) => (
-  <div className="flex flex-col items-center justify-end flex-1">
-    <div
-      className={`flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 ${
-        selected
-          ? 'w-24 h-24 bg-[#FF6F4B]'
-          : 'w-20 h-20 bg-gray-200 border border-gray-300'
-      }`}>
-      {icon}
-    </div>
-    <p className={`mt-2 text-black text-sm ${selected ? 'font-bold' : ''}`}>
-      {label}
-    </p>
-  </div>
-);
 
 export default function LaunchPage() {
   const router = useRouter();
   const [isConversationMode, setIsConversationMode] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [messages, setMessages] = useState<Array<{ type: 'user' | 'ai', content: string, showConsensusCard?: boolean }>>([]);
+  const [messages, setMessages] = useState<Array<{ type: 'user' | 'ai' | 'consensus', content: string, id?: string }>>([]);
+  const chatAreaRef = useRef<HTMLDivElement>(null);
+
+  // 监听消息变化，自动滚动到底部
+  useEffect(() => {
+    if (chatAreaRef.current && messages.length > 0) {
+      chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+    }
+  }, [messages]);
   
   const handleSendMessage = () => {
     if (inputValue.trim()) {
       // 如果是第一次进入对话模式，先添加AI的初始消息
       if (!isConversationMode) {
         setMessages([
-          { type: 'ai', content: '未来有什么计划吗？' },
-          { type: 'user', content: inputValue }
+          // { type: 'ai', content: '未来有什么计划吗？' },
+          { type: 'user', content: inputValue, id: `user-${Date.now()}` }
         ]);
       } else {
         // 如果已经在对话模式，只添加用户消息
-        setMessages(prev => [...prev, { type: 'user', content: inputValue }]);
+        setMessages(prev => [...prev, { type: 'user', content: inputValue, id: `user-${Date.now()}` }]);
       }
       
       // 切换到对话模式
@@ -60,19 +49,51 @@ export default function LaunchPage() {
       
       // 模拟AI回复（延迟1秒）
       setTimeout(() => {
-        setMessages(prev => [...prev, { 
-          type: 'ai', 
-          content: '好的！我推荐使用这个共识模板：',
-          showConsensusCard: true 
-        }]);
+        const aiMessageId = `ai-${Date.now()}`;
+        const aiMessage = '好的！我推荐使用这个共识模板：';
+        
+        // 先添加AI消息
+        setMessages(prev => [
+          ...prev, 
+          { type: 'ai', content: aiMessage, id: aiMessageId }
+        ]);
+        
+        // 计算AI消息渲染时间（每个字符30ms）+ 额外0.2秒延迟
+        const aiRenderTime = aiMessage.length * 50 + 200;
+        
+        // 延迟显示共识卡片
+        setTimeout(() => {
+          setMessages(prev => [
+            ...prev,
+            { type: 'consensus', content: '', id: `consensus-${Date.now()}` }
+          ]);
+        }, aiRenderTime);
       }, 1000);
     }
   };
+
+  const handleBackToHome = () => {
+    router.push('/');
+  };
+
   return (
     <>
+      {/* 返回按钮 - 浮于所有元素之上 */}
+      <button
+        onClick={handleBackToHome}
+        className="fixed top-5 left-5 z-50"
+      >
+        <Image
+          src={BackArrowPNG}
+          alt="back arrow"
+          width={15}
+        />
+      </button>
+
       {!isConversationMode ? (
         /* 非对话模式 - 完全静态，所有元素都固定 */
         <div className="bg-white h-screen overflow-hidden fixed inset-0">
+          
           {/* 固定顶部 - 背景图片 */}
           <div className="fixed top-0 left-0 right-0 z-20">
             <Image
@@ -85,10 +106,16 @@ export default function LaunchPage() {
           {/* 固定中间 - 标题内容 */}
           <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-full px-8">
             <div className="text-center font-alimama">
-              <h1 className="text-2xl font-bold text-black whitespace-nowrap">
+              <h1
+                className="text-2xl font-bold text-black whitespace-nowrap opacity-0 animate-fade-in"
+                style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
+              >
                 告诉我你们的需求
               </h1>
-              <h2 className="text-2xl font-bold text-black mt-2 whitespace-nowrap">
+              <h2
+                className="text-2xl font-bold text-black mt-2 whitespace-nowrap opacity-0 animate-fade-in"
+                style={{ animationDelay: '0.7s', animationFillMode: 'forwards' }}
+              >
                 然后开启你们的合拍之旅
               </h2>
             </div>
@@ -185,13 +212,29 @@ export default function LaunchPage() {
           </div>
           
           {/* 聊天区域 */}
-          <div className="h-full pt-48 pb-20 overflow-y-auto bg-white">
+          <div 
+            ref={chatAreaRef}
+            className="h-full pt-48 pb-20 overflow-y-auto bg-white"
+          >
             <div className="w-full px-4 py-4">
-              {messages.map((msg, index) => (
-                msg.type === 'user' ? 
-                  <UserMessage key={index} message={msg.content} /> :
-                  <AiMessage key={index} message={msg.content} showConsensusCard={msg.showConsensusCard} />
-              ))}
+              {messages.map((msg, index) => {
+                if (msg.type === 'user') {
+                  return <UserMessage key={msg.id || `user-${index}`} message={msg.content} />;
+                } else if (msg.type === 'ai') {
+                  return <AiMessage key={msg.id || `ai-${index}`} message={msg.content} />;
+                } else if (msg.type === 'consensus') {
+                  return (
+                    <AnimatedConsensusCard
+                      key={msg.id || `consensus-${index}`}
+                      title="小组作业共识模板"
+                      description="适用于2-6人参与的小组协作任务
+                        在任务开始前明确目标、分工、规则与边界
+                        提高协作效率和完成度"
+                    />
+                  );
+                }
+                return null;
+              })}
             </div>
           </div>
         </div>
