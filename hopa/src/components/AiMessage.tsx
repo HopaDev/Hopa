@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import LogoPNG from '../assets/img/Logo.png';
 import ConsensusCard from './ConsensusCard';
 
 interface AiMessageProps {
@@ -11,7 +10,7 @@ interface AiMessageProps {
 export default function AiMessage({ message = "正在思考中...", isPlaceholder = false, showConsensusCard = false }: AiMessageProps) {
   return (
     <div className="flex items-start mb-4 px-4">
-      <Image src={LogoPNG} alt="logo" width={40} height={40} className="flex-shrink-0" />
+      {/* <Image src={LogoPNG} alt="logo" width={40} height={40} className="flex-shrink-0" /> */}
       <div className="relative ml-3 max-w-[80%]">
         {/* AI消息气泡三角形 */}
         <div className="absolute left-0 top-3 transform -translate-x-full z-10">
