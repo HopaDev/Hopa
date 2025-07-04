@@ -3,7 +3,18 @@
 import { useEffect, useState } from 'react';
 
 export default function TimeDisplay() {
-  const [currentTime, setCurrentTime] = useState({ hours: '', minutes: '' });
+  // 初始化时就设置当前时间
+  const getInitialTime = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    return {
+      hours: hours.toString(),
+      minutes: minutes.toString().padStart(2, '0')
+    };
+  };
+
+  const [currentTime, setCurrentTime] = useState(getInitialTime);
 
   useEffect(() => {
     const updateTime = () => {
@@ -16,9 +27,6 @@ export default function TimeDisplay() {
       });
     };
 
-    // 立即更新时间
-    updateTime();
-    
     // 每分钟更新一次
     const timeInterval = setInterval(updateTime, 60000);
     
