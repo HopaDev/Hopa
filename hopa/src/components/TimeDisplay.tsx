@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { useTheme } from './ThemeProvider';
 
 export default function TimeDisplay() {
   // 初始化时就设置当前时间
@@ -15,6 +16,7 @@ export default function TimeDisplay() {
   };
 
   const [currentTime, setCurrentTime] = useState(getInitialTime);
+  const { isWhiteTheme } = useTheme();
 
   useEffect(() => {
     const updateTime = () => {
@@ -35,7 +37,9 @@ export default function TimeDisplay() {
 
   return (
     <div className="fixed top-5 left-14 z-[999999] pointer-events-none">
-      <div className="text-black text-lg font-sf tracking-tight flex items-center">
+      <div className={`text-lg font-sf tracking-tight flex items-center transition-colors duration-700 ${
+        isWhiteTheme ? 'text-white' : 'text-black'
+      }`}>
         <span>{currentTime.hours}</span>
         <span className="transform -translate-y-0.5 mx-px">:</span>
         <span>{currentTime.minutes}</span>
