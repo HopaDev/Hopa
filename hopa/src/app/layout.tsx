@@ -7,9 +7,11 @@ import HomeIcon from "@/assets/img/Home.png";
 import LaunchIcon from "@/assets/img/Launch.png";
 import PersonIcon from "@/assets/img/Person.png";
 import ConditionalNavigation from "@/components/ConditionalNavigation";
-import IslandIcon from "@/assets/img/island.png";
 import HomeIndIcon from "@/assets/img/home_ind.png";
 import Image from "next/image";
+import TimeDisplay from "@/components/TimeDisplay";
+import ThemeProvider from "@/components/ThemeProvider";
+import DynamicBackground from "@/components/DynamicBackground";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,28 +42,26 @@ export default function RootLayout({
         <meta name="msapplication-navbutton-color" content="#FF6B35" />
       </head>      
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* 顶部固定背景图片 */}
-        <div className="fixed top-0 left-0 w-full z-114514 pointer-events-none">
-          <Image 
-            src={IslandIcon} 
-            alt="Island background" 
-            className="w-full h-auto"
-            priority
-          />
-        </div>
-        
-        {/* 底部固定背景图片 */}
-        <div className="fixed bottom-0 left-0 w-full z-114514 pointer-events-none">
-          <Image 
-            src={HomeIndIcon} 
-            alt="Home indicator background" 
-            className="w-full h-auto"
-            priority
-          />
-        </div>
-        
-        <main className="pb-24 relative z-20">{children}</main>
-        <ConditionalNavigation />
+        <ThemeProvider>
+          {/* iOS风格时间显示 */}
+          <TimeDisplay />
+          
+          {/* 顶部固定背景图片 - 动态切换 */}
+          <DynamicBackground />
+          
+          {/* 底部固定背景图片 */}
+          <div className="fixed bottom-0 left-0 w-full z-114514 pointer-events-none">
+            <Image 
+              src={HomeIndIcon} 
+              alt="Home indicator background" 
+              className="w-full h-auto"
+              priority
+            />
+          </div>
+          
+          <main className="pb-24 relative z-20">{children}</main>
+          {/* <ConditionalNavigation /> */}
+        </ThemeProvider>
       </body>
     </html>
   );

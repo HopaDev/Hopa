@@ -31,7 +31,7 @@ export default function ConditionalNavigation() {
   }
 
   return (
-    <nav className="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-2/3 fixed" style={{ zIndex: 999999 }}>
+    <nav className="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-2/3 fixed">
       {/* 导航栏背景 - 允许内容超出容器 */}
       <div className="relative overflow-visible">
         <Image 

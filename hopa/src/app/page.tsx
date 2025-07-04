@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import BackgroundOrange from '@/assets/img/home/background_orange.png';
@@ -13,8 +13,14 @@ import MainText from '@/assets/img/home/main_text.png';
 import Text from '@/assets/img/home/text.png';
 import Recent from '@/assets/img/home/recent.png';
 import Card from '@/assets/img/home/card.png';
+import Startup from '@/assets/img/startup.png';
+import ConditionalNavigation from '@/components/ConditionalNavigation';
 
 export default function Home() {
+  // 启动画面状态
+  const [showStartup, setShowStartup] = useState(true);
+  const [startupOpacity, setStartupOpacity] = useState(true);
+  
   // 隐藏iOS地址栏
   useEffect(() => {
     const hideAddressBar = () => {
@@ -40,8 +46,43 @@ export default function Home() {
       window.removeEventListener('resize', hideAddressBar);
     };
   }, []);
+
+  // 启动画面逻辑
+  useEffect(() => {
+    // 1秒后开始渐隐
+    const fadeTimer = setTimeout(() => {
+      setStartupOpacity(false);
+    }, 1000);
+
+    // 1.5秒后完全隐藏
+    const hideTimer = setTimeout(() => {
+      setShowStartup(false);
+    }, 1500);
+
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(hideTimer);
+    };
+  }, []);
   return (
     <div className="h-screen overflow-hidden relative">
+      {/* 启动画面 */}
+      {showStartup && (
+        <div className={`fixed inset-0 z-[999999] bg-white flex items-center justify-center transition-opacity duration-500 ${
+          startupOpacity ? 'opacity-100' : 'opacity-0'
+        }`}>
+          <Image 
+            src={Startup} 
+            alt="startup" 
+            width={0}
+            height={0}
+            className="w-full h-auto"
+            sizes="100vw"
+            priority
+          />
+        </div>
+      )}
+      
       {/* 橙色背景 - 页面顶部 */}
       <div className="absolute top-0 left-0 w-full z-0">
         <Image 
@@ -164,6 +205,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <ConditionalNavigation />
     </div>
   );
 }
