@@ -61,7 +61,7 @@ export default function RootLayout({
         </div>
         
         <main className="pb-24 relative z-20">{children}</main>
-        <ConditionalNavigation />
+        {/* <ConditionalNavigation /> */}
       </body>
     </html>
   );

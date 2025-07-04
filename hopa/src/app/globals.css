@@ -214,5 +214,5 @@ main {
 /* 确保导航栏在背景图片之上，但保持fixed定位 */
 nav.fixed {
   position: fixed !important;
-  z-index: 999999 !important;
+  z-index: 150 !important;
 }
