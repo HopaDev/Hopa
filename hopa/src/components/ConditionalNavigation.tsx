@@ -13,7 +13,7 @@ import path from 'path';
 
 export default function ConditionalNavigation() {
   const pathname = usePathname();
-  const hideNavigation = pathname === '/launch' || pathname === '/result' || pathname === '/fill' || pathname == '/sign';
+  const hideNavigation = pathname === '/launch' || pathname === '/result' || pathname === '/fill' || pathname === '/sign';
 
   useEffect(() => {
     const main = document.querySelector('main');
@@ -31,7 +31,7 @@ export default function ConditionalNavigation() {
   }
 
   return (
-    <nav className="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-2/3 z-50">
+    <nav className="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-2/3 fixed" style={{ zIndex: 999999 }}>
       {/* 导航栏背景 - 允许内容超出容器 */}
       <div className="relative overflow-visible">
         <Image 

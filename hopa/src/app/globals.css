@@ -185,3 +185,34 @@ html {
   animation: fade-in-consensus 0.8s cubic-bezier(0.4,0,0.2,1) forwards;
   opacity: 0;
 }
+
+/* 固定背景图片样式 */
+.fixed-bg-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.fixed-bg-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* 确保主要内容区域有足够的层级 */
+main {
+  position: relative;
+  z-index: 20;
+}
+
+/* 确保导航栏在背景图片之上，但保持fixed定位 */
+nav.fixed {
+  position: fixed !important;
+  z-index: 999999 !important;
+}
