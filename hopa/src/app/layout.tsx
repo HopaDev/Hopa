@@ -10,6 +10,7 @@ import ConditionalNavigation from "@/components/ConditionalNavigation";
 import IslandIcon from "@/assets/img/island.png";
 import HomeIndIcon from "@/assets/img/home_ind.png";
 import Image from "next/image";
+import TimeDisplay from "@/components/TimeDisplay";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,9 @@ export default function RootLayout({
         <meta name="msapplication-navbutton-color" content="#FF6B35" />
       </head>      
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* iOS风格时间显示 */}
+        <TimeDisplay />
+        
         {/* 顶部固定背景图片 */}
         <div className="fixed top-0 left-0 w-full z-114514 pointer-events-none">
           <Image 

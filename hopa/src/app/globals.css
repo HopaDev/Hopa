@@ -15,12 +15,35 @@
        local('阿里妈妈数黑体');
 }
 
+/* 旧金山字体 - SF Pro Display */
+@font-face {
+  font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/San-Francisco-Text-Bold.ttf') format('truetype'),
+       local('SF Pro Display Semibold'),
+       local('SF Pro Display'),
+       local('San Francisco'),
+       local('-apple-system');
+}
+
 /* 定义自定义字体类 - 移动端友好 */
 .font-alimama {
   font-family: 'Alimama ShuHeiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: bold;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* 旧金山字体类 - 用于时间显示 */
+.font-sf {
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'tnum' 1; /* 等宽数字 */
+  font-variant-numeric: tabular-nums;
 }
 
 :root {
