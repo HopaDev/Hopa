@@ -56,7 +56,7 @@ export default function ResultPage() {
       </div>
 
       {/* 左上角 back 按钮 */}
-      <div className="absolute top-18 left-5 z-30">
+      <div className="absolute top-18 left-7 z-30">
         <Image
           src={BackImg}
           alt="返回按钮"

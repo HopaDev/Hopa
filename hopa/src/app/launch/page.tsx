@@ -83,7 +83,7 @@ export default function LaunchPage() {
       {/* 返回按钮 - 浮于所有元素之上 */}
       <button
         onClick={handleBackToHome}
-        className="fixed top-16 left-5 z-50"
+        className="fixed top-20 left-7 z-50"
       >
         <Image
           src={BackArrowPNG}

@@ -59,7 +59,7 @@ export default function RootLayout({
             />
           </div>
           
-          <main className="pb-24 relative z-20">{children}</main>
+          <main className="relative z-20">{children}</main>
           {/* <ConditionalNavigation /> */}
         </ThemeProvider>
       </body>

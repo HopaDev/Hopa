@@ -15,16 +15,16 @@ export default function ConditionalNavigation() {
   const pathname = usePathname();
   const hideNavigation = pathname === '/launch' || pathname === '/result' || pathname === '/fill' || pathname === '/sign';
 
-  useEffect(() => {
-    const main = document.querySelector('main');
-    if (main) {
-      if (hideNavigation) {
-        main.style.paddingBottom = '0';
-      } else {
-        main.style.paddingBottom = '6rem'; // pb-24 = 6rem
-      }
-    }
-  }, [hideNavigation]);
+  // useEffect(() => {
+  //   const main = document.querySelector('main');
+  //   if (main) {
+  //     if (hideNavigation) {
+  //       main.style.paddingBottom = '0';
+  //     } else {
+  //       main.style.paddingBottom = '6rem'; // pb-24 = 6rem
+  //     }
+  //   }
+  // }, [hideNavigation]);
 
   if (hideNavigation) {
     return null;

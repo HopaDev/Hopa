@@ -141,7 +141,7 @@ export default function Home() {
           alt="white background" 
           width={0}
           height={0}
-          className="w-full h-auto opacity-50"
+          className="w-full h-175"
           sizes="100vw"
         />
         
@@ -159,7 +159,7 @@ export default function Home() {
         </div>
         
         {/* 内容区域 - 使用相对定位避免重叠 */}
-        <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-10 w-5/6 space-y-1">
+        <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-10 w-5/6 space-y-3">
           {/* Main Text和Text - 并列 */}
           <div className="flex justify-between gap-4 items-center -ml-8">
             <div className="flex-1">

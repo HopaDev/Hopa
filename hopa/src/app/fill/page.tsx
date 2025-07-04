@@ -10,6 +10,8 @@ import {
   DateQuestion,
   TimeQuestion 
 } from '@/components/QuestionComponents';
+import BackArrowPNG from '../../assets/img/launch/back_arrow.png';
+import Image from 'next/image';
 
 export default function FillPage() {
   const router = useRouter();
@@ -97,32 +99,31 @@ export default function FillPage() {
     router.push('/sign');
   };
 
+  
+
   return (
+    <>
+      <button
+        onClick={() => router.back()}
+        className="fixed top-20 left-7 z-50"
+      >
+        <Image
+          src={BackArrowPNG}
+          alt="back arrow"
+          width={15}
+        />
+      </button>
+    
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* 头部 */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 sticky top-0 z-10">
-        <div className="flex items-center justify-between px-4 py-3">
-          <button 
-            onClick={() => router.back()}
-            className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors"
-          >
-            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <h1 className="text-lg font-semibold text-gray-900">小组作业共识</h1>
-          <div className="w-10"></div>
-        </div>
-      </div>
+
 
       {/* 问卷内容 */}
       <div className="px-4 py-6 pb-32">
         {/* 共识标题卡片 */}
-        <div className="bg-gradient-to-r from-[#ff5a5e] via-[#ff6b4a] to-[#ff8a5b] rounded-3xl p-6 mb-6 text-white shadow-lg">
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-              <span className="text-xl">📚</span>
-            </div>
+        {/*  下拉后卡片始终显示在顶部 */}
+        <div className="fixed bg-gradient-to-r from-[#ff5a5e] via-[#ff6b4a] to-[#ff8a5b] rounded-3xl px-6 py-3 pb-6 mb-6 mt-10 text-white shadow-lg z-40">
+          <div className="flex items-center space-x-3 mb-3 text-align-middle justify-center">
             <h2 className="text-xl font-bold">小组作业共识模板</h2>
           </div>
           <p className="text-white/90 text-sm leading-relaxed">
@@ -131,7 +132,7 @@ export default function FillPage() {
         </div>
 
         {/* 目标设定 */}
-        <div className="mb-8">
+        <div className="mt-45 mb-8 align-middle items-center justify-center">
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-2 h-8 bg-gradient-to-b from-[#ff5a5e] to-[#ff8a5b] rounded-full"></div>
             <h3 className="text-xl font-bold text-gray-900">目标设定</h3>
@@ -451,11 +452,12 @@ export default function FillPage() {
           <span className="font-medium">填写进度</span>
           <span className="font-bold text-[#ff5a5e]">15/15 题</span>
         </div>
-        <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+        <div className="h-3 mb-5 bg-gray-200 rounded-full overflow-hidden">
           <div className="h-full bg-gradient-to-r from-[#ff5a5e] to-[#ff8a5b] rounded-full transition-all duration-500" 
                style={{ width: '100%' }}></div>
         </div>
       </div>
     </div>
+    </>
   );
 }

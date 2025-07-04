@@ -18,14 +18,18 @@ import customModal2 from '@/assets/img/sign/customModal2.png';
 import customModal3 from '@/assets/img/sign/customModal3.png';
 import customModal4 from '@/assets/img/sign/customModal4.png';
 import createNew from '@/assets/img/sign/createNew.png';
+import BackArrowPNG from '@/assets/img/sign/backArrow.png';
 import Bg1 from '@/assets/img/sign/bg1.png';
 import Bg2 from '@/assets/img/sign/bg2.png';
 import Bg3 from '@/assets/img/sign/bg3.svg';
 import Bg4 from '@/assets/img/sign/bg4.svg';
+
+import signProgress from '@/assets/img/sign/signed/progress.png';
+import signPass from '@/assets/img/sign/signed/pass.png';
 import { StaticImageData } from 'next/image';
 import Image from 'next/image';
 
-type SignatureState = 'result' | 'method' | 'signing';
+type SignatureState = 'result' | 'method' | 'signing' | 'signed';
 type SignatureMethod = 'quick' | 'custom' | 'voice' | 'handwrite' | 'nfc';
 
 interface FormData {
@@ -318,7 +322,7 @@ export default function SignPage() {
     
     localStorage.setItem('consensusSignature', JSON.stringify(signatureData));
     alert('签名完成！共识已达成');
-    router.push('/');
+    setCurrentState('signed');
   };
 
   if (!formData) {
@@ -338,9 +342,21 @@ export default function SignPage() {
   }
 
   return (
+    <>
+      <button
+        onClick={handleBack}
+        className="fixed top-16 left-5 z-50"
+      >
+        <Image
+          src={BackArrowPNG}
+          alt="back arrow"
+          width={15}
+        />
+      </button>
+    
     <div className="min-h-screen  relative">
       {/* 背景装饰 - 使用提供的图片 */}
-      {currentState !== "signing" && (
+      {currentState !== "signing" && currentState !=="signed"  && (
       <div className="fixed inset-0 pointer-events-none z-0">
         {/* 左上角装饰 */}
         <div className="absolute top-16 left-0">
@@ -366,7 +382,7 @@ export default function SignPage() {
 
 
                 {isRecording && (
-            <div className="fixed  inset-0 w-full h-full z-50  bg-[#383838] backdrop-blur-sm  flex items-center justify-center flex-col ">
+            <div className="fixed  inset-0 w-full h-full z-100  bg-[#383838] backdrop-blur-sm  flex items-center justify-center flex-col ">
               <div>
                 <Image
                   src={voiceStopButton}
@@ -385,15 +401,17 @@ export default function SignPage() {
           )}
 
       {/* 头部 */}
-      <div className="backdrop-blur-sm border-b border-gray-200/50 sticky top-0 z-10">
-        <div className="flex items-center justify-between px-6 py-4">
-          <button onClick={handleBack} className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors">
+      <div className="backdrop-blur-sm sticky top-0 z-10">
+        <div className="flex items-center justify-between px-6 py-6">
+          {/* <button onClick={handleBack} className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors">
             <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-          </button>
+          </button> */}
           {/* <h1 className="text-lg font-bold text-gray-900">共识签名</h1> */}
-          <div className="w-10"></div>
+          <div className='p-2 -ml-2 w-12 h-10'>
+
+          </div>
         </div>
       </div>
 
@@ -588,9 +606,9 @@ export default function SignPage() {
                   <button
                     key={option.id}
                     onClick={() => setSelectedMethod(option.id)}
-                    className={`flex-shrink-0 flex items-center space-x-2 px-4 py-3 rounded-xl transition-all duration-300 
+                    className={`font-alimama text-2xl flex-shrink-0 flex items-center space-x-2 px-4 py-3 rounded-xl transition-all duration-300 
                       ${selectedMethod === option.id 
-                        ? `bg-gradient-to-r ${option.color} text-white shadow-lg scale-105` 
+                        ? `bg-gradient-to-r ${option.color} text-white shadow-lg` 
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }`}
                   >
@@ -625,14 +643,14 @@ export default function SignPage() {
               {/* 个性化签名 */}
               {selectedMethod === 'custom' && (
                 <div className="">
-                  <div className="absolute w-full h-193 overflow-hidden  z--10 ">
+                  <div className="absolute w-full h-189 overflow-hidden  z--10 ">
                   <Image 
                     src={customBackground}
                     alt="customBackground"
                     className="absolute -top-[20%] w-full h-auto opacity-90"
                   />
                   </div>
-                  <div className="absolute w-full h-193 overflow-hidden z--20 p-4">
+                  <div className="absolute w-full h-189 overflow-hidden z--20 p-4">
                     <div className="text-center">
                       <h3 className="text-3xl font-alimama font-bold text-gray-900 mb-2">选择你的个性化签名</h3>
                     </div>
@@ -781,7 +799,7 @@ export default function SignPage() {
 
               {/* 手写签名 */}
               {selectedMethod === 'handwrite' && (
-                <div className="p-2 m-6 my-12">
+                <div className="p-2 m-6 my-6">
                   <div className="text-right ">
                     {/* <h3 className="text-2xl font-bold text-gray-900 mb-2">手写签名</h3> */}
                     <p className="text-2xl mt-6 text-gray-600 font-alimama">请横屏手写你的签名</p>
@@ -863,7 +881,39 @@ export default function SignPage() {
             </div>
           </div>
         )}
+
+        {/* 状态4：签名完成 */}
+        {currentState === 'signed' && (
+          <div>
+            <div>
+              <Image
+                src={signPass}
+                alt="signPass"
+                className="w-48 h-48 mx-auto mt-30 cursor-pointer hover:scale-105 transition-transform duration-300 object-contain"
+              />
+            </div>
+            <div>
+              <Image
+                src={signProgress}
+                alt="signProgress"
+                className="w-96 h-64 mx-auto mt-10 cursor-pointer hover:scale-105 transition-transform duration-300 object-contain"
+              />
+              </div>
+              <button
+                onClick={() => router.push('/result')}
+                  className="bg-[#FF595D] rounded-full text-white font-alimama font-bold text-lg py-4 px-8 mx-auto block mt-10 shadow-lg hover:shadow-xl transition-shadow duration-300
+                             flex items-center justify-center space-x-3 hover:scale-105 active:scale-95"
+                >
+                <div>
+                  <p>
+                    点击生成共识卡片
+                  </p>
+                </div>
+              </button>
+          </div>
+          )}
       </div>
     </div>
+    </>
   );
 }
