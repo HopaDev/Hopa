@@ -11,7 +11,11 @@ import {
   TimeQuestion 
 } from '@/components/QuestionComponents';
 import BackArrowPNG from '../../assets/img/launch/back_arrow.png';
+import voicePi from '@/assets/img/fill/voicePi.png';
+import voiceStart from '@/assets/img/fill/voiceStart.png';
+import voiceStopButton from '@/assets/img/sign/voiceStopButton.png';
 import Image from 'next/image';
+import AiMessage from '../../components/AiMessage';
 
 export default function FillPage() {
   const router = useRouter();
@@ -99,7 +103,66 @@ export default function FillPage() {
     router.push('/sign');
   };
 
-  
+   // 统计必填题
+  const requiredFields = ['qualityGoal', 'skills', 'primaryRole'];
+  // 你可以根据实际需要，把所有必填项都加进来
+  const totalRequired = requiredFields.length;
+
+  // 统计已填写的必填题数量
+  const filledRequired = requiredFields.filter(
+    field => {
+      const value = formData[field as keyof typeof formData];
+      // 允许字符串和数组类型的必填项
+      if (Array.isArray(value)) return value.length > 0;
+      return !!value;
+    }
+  ).length;
+
+  // 总题数（如需统计所有题目，建议把所有字段都列出来）
+  const totalQuestions = 15;
+  // 已填写题数（可选：统计所有字段非空的数量）
+  const filledQuestions = [
+    formData.qualityGoal,
+    formData.investmentLevel,
+    formData.timeRange.min !== 0 || formData.timeRange.max !== 20, // 判断是否调整过
+    formData.availableTime.length > 0,
+    formData.skills,
+    formData.primaryRole,
+    formData.secondaryRoles.length > 0,
+    formData.draftDays,
+    formData.noticeTime,
+    formData.inactiveHandling,
+    formData.unifiedStyle.length > 0,
+    formData.conflictResolution,
+    formData.overtimeAcceptance,
+    formData.closingMethods.length > 0,
+    formData.boundaries
+  ].filter(Boolean).length;
+
+  // 进度百分比
+  const progressPercent = Math.round((filledQuestions / totalQuestions) * 100);
+
+
+
+ 
+
+  type VoiceStatus = 'idle' | 'detail' | 'recording' ;
+
+  const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>('idle');
+
+  const handleVoiceButtonClick = () => {
+    console.log("Voice button clicked, current status:", voiceStatus);
+    if (voiceStatus === 'idle') {
+      setVoiceStatus('detail');
+    } else if (voiceStatus === 'detail') {
+      setVoiceStatus('recording');
+    } else if (voiceStatus === 'recording') {
+      setVoiceStatus('idle');
+    }
+  }
+
+
+
 
   return (
     <>
@@ -117,19 +180,21 @@ export default function FillPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* 头部 */}
 
-
-      {/* 问卷内容 */}
-      <div className="px-4 py-6 pb-32">
-        {/* 共识标题卡片 */}
-        {/*  下拉后卡片始终显示在顶部 */}
-        <div className="fixed bg-gradient-to-r from-[#ff5a5e] via-[#ff6b4a] to-[#ff8a5b] rounded-3xl px-6 py-3 pb-6 mb-6 mt-10 text-white shadow-lg z-40">
-          <div className="flex items-center space-x-3 mb-3 text-align-middle justify-center">
+    <div className="fixed bg-gradient-to-r from-[#ff5a5e] via-[#ff6b4a] to-[#ff8a5b]  px-6 py-3 pb-6 mb-6 mt-0 mx-auto w-full text-white shadow-lg z-40 align-middle items-center justify-center
+        rounded-bl-3xl rounded-br-3xl
+    ">
+          <div className="flex items-center space-x-3 mb-3 mt-18 text-align-middle justify-center">
             <h2 className="text-xl font-bold">小组作业共识模板</h2>
           </div>
           <p className="text-white/90 text-sm leading-relaxed">
             适用于2-6人参与的小组协作任务，在任务开始前明确目标、分工、规则与边界，提高协作效率和完成度
           </p>
-        </div>
+    </div>
+      {/* 问卷内容 */}
+      <div className="px-4 py-6 pb-32">
+        {/* 共识标题卡片 */}
+        {/*  下拉后卡片始终显示在顶部 */}
+        
 
         {/* 目标设定 */}
         <div className="mt-45 mb-8 align-middle items-center justify-center">
@@ -438,23 +503,102 @@ export default function FillPage() {
                        shadow-xl shadow-[#ff5a5e]/30 hover:shadow-2xl hover:shadow-[#ff5a5e]/40 
                        hover:scale-[1.02] transition-all duration-300 active:scale-95"
           >
-            <span className="flex items-center justify-center space-x-2">
-              <span>完成填写，进入签名认证</span>
-              <span className="text-xl">✨</span>
+            <span className="flex items-center justify-center space-x-2 font-alimama">
+              <span>完成填写</span>
             </span>
           </button>
         </div>
+      </div>
+
+
+
+      {/* 语音填写按钮 */}
+      {/* 鼠标经过时横向向左延伸并显示提示文字 */}
+      <div
+        className="fixed bottom-25 right-1 z-50 flex items-center"
+        // 事件绑定在最外层，保证整个区域都能触发
+      >
+        {/* 提示文字区域 */}
+        <div
+          className={`
+            transition-all duration-300
+            ${voiceStatus === 'detail' ? 'opacity-100 translate-x-0 max-w-xs mr-3' : 'opacity-0 translate-x-10 max-w-[40px] mr-0'}
+            bg-white shadow-lg rounded-2xl px-4 py-3 text-gray-700 text-sm font-medium
+            whitespace-nowrap overflow-hidden
+          `}
+        >
+          点击开始语音智能填写
+        </div>
+        <button
+          className="bg-white rounded-full p-4 shadow-lg hover:shadow-xl transition-shadow duration-300"
+          //长按事件处理
+          onClick={handleVoiceButtonClick}
+          onMouseOut={()=>{
+            if (voiceStatus === 'detail'){
+              setVoiceStatus('idle');
+            } 
+          }} 
+          type="button"
+        >
+          { voiceStatus === 'detail' && (
+            // 显示语音图标
+            <Image
+            src={voiceStart}
+            alt="语音开始"
+            width={40}
+            height={40}
+            />
+          )}
+
+          { voiceStatus === 'idle' && (
+            <Image
+            src={voicePi}
+            alt="语音填写"
+            width={40}
+            height={40}
+            />
+          )}
+          
+        </button>
+        { voiceStatus === 'recording' && (
+
+              <div className="fixed  inset-0 w-full h-full z-100  bg-[#383838] backdrop-blur-sm  flex items-center  flex-col ">
+              <div className="flex mt-20 ">
+                <Image
+                  src={voiceStopButton}
+                  alt="voiceStopButton"
+                  className="w-96 h-96 mx-auto cursor-pointer hover:scale-105 transition-transform duration-300 animate-pulse object-contain"
+                  onClick={() => setVoiceStatus('idle')}
+                />
+                </div>
+            
+              <div className="text-red-600 font-bold text-lg">
+                🔴 输入中... 
+              </div>
+              <div className="text-xl text-red-500 mt-1 font-alimama">请说出您的签名承诺</div>
+              <div className='flex text-gray-300 text-center mt-4 pl-10 max-w-md items-center align-middle justify-center content-center'>
+                <AiMessage
+                  message="“我比较关注时间管理和分工职责的部分。我感觉最好能提前三天完成初稿，而且在开会前要至少提前一天通知我。哦还有，感觉最好能有统一的报告语言风格和设计排版。其他部分我没有特别的要求。” "
+                />
+              </div>
+
+            </div>
+        )}
       </div>
 
       {/* 进度指示器 */}
       <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-gray-200/50 px-6 py-4">
         <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
           <span className="font-medium">填写进度</span>
-          <span className="font-bold text-[#ff5a5e]">15/15 题</span>
+          <span className="font-bold text-[#ff5a5e]">
+            {filledQuestions}/{totalQuestions} 题
+          </span>
         </div>
         <div className="h-3 mb-5 bg-gray-200 rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-[#ff5a5e] to-[#ff8a5b] rounded-full transition-all duration-500" 
-               style={{ width: '100%' }}></div>
+          <div
+            className="h-full bg-gradient-to-r from-[#ff5a5e] to-[#ff8a5b] rounded-full transition-all duration-500"
+            style={{ width: `${progressPercent}%` }}
+          ></div>
         </div>
       </div>
     </div>

@@ -20,7 +20,7 @@ export default function AiMessage({ message = "正在思考中...", isPlaceholde
       const timer = setTimeout(() => {
         setDisplayedText(prev => prev + message[currentIndex]);
         setCurrentIndex(prev => prev + 1);
-      }, 30); // 加快速度到30毫秒一个字符，更接近ChatGPT的速度
+      }, 120); // 加快速度到30毫秒一个字符，更接近ChatGPT的速度
       
       return () => clearTimeout(timer);
     }
@@ -29,7 +29,7 @@ export default function AiMessage({ message = "正在思考中...", isPlaceholde
   return (
     <div className="flex items-start mb-4 px-4">
       <div className="relative ml-3 max-w-[80%]">
-        <div className="text-black">
+        <div className="">
           <p className={`text-base ${isPlaceholder ? 'text-gray-500 italic' : ''}`}>
             <span className="inline-block">
               {displayedText.split('').map((char, index) => (

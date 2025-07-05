@@ -484,9 +484,8 @@ export default function SignPage() {
                            shadow-2xl shadow-[#ff5a5e]/30 hover:shadow-3xl hover:shadow-[#ff5a5e]/50 
                            hover:scale-[1.02] transition-all duration-300 active:scale-95"
               >
-                <span className="flex items-center justify-center space-x-3">
+                <span className="flex items-center justify-center space-x-3 font-alimama">
                   <span>同意内容，进行签名</span>
-                  <span className="text-xl">🚀</span>
                 </span>
               </button>
               
@@ -494,7 +493,7 @@ export default function SignPage() {
                 onClick={handleDisagree}
                 className="w-full bg-white/70 hover:bg-white/90 text-gray-700 py-5 px-8 rounded-3xl font-bold text-lg
                            border border-gray-300/50 hover:border-gray-400/50 transition-all duration-300 active:scale-95
-                           shadow-lg hover:shadow-xl"
+                           shadow-lg hover:shadow-xl font-alimama"
               >
                 不同意内容
               </button>
